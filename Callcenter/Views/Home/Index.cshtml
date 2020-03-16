@@ -1,0 +1,83 @@
+﻿@model System.Collections.Generic.List<Callcenter.Models.Entry>
+@{
+    ViewData["Title"] = "Callcenter";
+}
+<style>
+    .marked {
+        background-color: rosybrown;
+    }
+
+    .other {
+        background-color: aqua;
+    }
+</style>
+<script type="text/javascript">
+    function MarkItem(elmid) {
+        var element = document.getElementById(elmid);
+        if (!element.classList.contains("other")) {
+            element.classList.add("marked");
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("POST", "/Entry", true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.send("id="+elmid);
+        } else {
+            alert("Element " + elmid + " wird schon bearbeiter");
+        }
+    }
+    function DelItem(elmid) {
+        var element = document.getElementById(elmid);
+        if (element.classList.contains("marked")) {
+            window.location.href = "/Entry/Delete/" + elmid;
+        } else {
+            alert("Element " + elmid + " nicht als bearbeitet Markiert");
+        }
+    }
+</script>
+<div class="text-center">
+    <h1 class="display-4">@ViewData["Title"]</h1>
+</div>
+<div id="tablespace">
+    <table style="width: 100% ">
+        <tr>
+            <th>Timestamp</th>
+            <th>phone</th>
+            <th>requestText</th>
+            <th>Mark</th>
+            <th>Finish</th>
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr id="@item.id" class="@item.CString">
+                <td>@item.timestamp</td>
+                <td>@item.phone</td>
+                <td>@item.requestText</td>
+                <td onclick="MarkItem('@item.id')">O</td>
+                <td onclick="DelItem('@item.id')">X</td>
+            </tr>
+        }
+    </table>
+</div>
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script type="text/javascript">
+    "use strict";
+    var connection = new signalR.HubConnectionBuilder().withUrl("/Hub").build();
+    connection.start().then(function () {
+        console.log("SignalR Connected");
+    }).catch(function (err) {
+        return console.error(err.toString());
+    });
+    connection.on("marked", function (id) {
+        console.log("SignalR - Marked: " + id);
+        var element = document.getElementById(id);
+        if (element && element != undefined && element != null && !element.classList.contains("marked")) {
+            element.classList.add("other");
+        }
+    });
+    connection.on("delete", function (id) {
+        console.log("SignalR - Delete: " + id);
+        var element = document.getElementById(id);
+        if (element && element != undefined && element != null) {
+            element.parentElement.removeChild(element);
+        }
+    });
+</script>

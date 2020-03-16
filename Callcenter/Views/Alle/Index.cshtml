@@ -1,0 +1,31 @@
+﻿@model  System.Collections.Generic.List<Callcenter.Models.Entry>
+    @{
+        ViewData["Title"] = "Callcenter";
+    }
+
+    <div class="text-center">
+        <h1 class="display-4">@ViewData["Title"]</h1>
+    </div>
+    <div id="tablespace">
+        <table style="width:100%">
+            <tr>
+                <th>Timestamp</th>
+                <th>phone</th>
+                <th>zip</th>
+                <th>requestText</th>
+                <th>Mark</th>
+                <th>Finish</th>
+            </tr>
+            @foreach(var item in Model)
+            {
+        <tr>
+            <td>@item.timestamp</td>
+            <td>@item.phone</td>
+            <td>@item.zip</td>
+            <td>@item.requestText</td>
+            <td>O</td>
+            <td>X</td>
+        </tr>
+            }
+        </table>
+    </div>
