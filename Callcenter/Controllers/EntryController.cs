@@ -29,7 +29,7 @@ namespace Callcenter.Controllers
         }
 
         [HttpPost("/Entry")]
-        public IActionResult Mark(string id)
+        public IActionResult Mark(MongoDB.Bson.ObjectId id)
         {
             Console.WriteLine($"Element {id} Marked");
             Entry entry = _save.Find(id);
@@ -42,7 +42,7 @@ namespace Callcenter.Controllers
         }
 
         [HttpGet("/Entry/Delete/{id}")]
-        public IActionResult Delete(string id)
+        public IActionResult Delete(MongoDB.Bson.ObjectId id)
         {
             Console.WriteLine($"Element {id} Delete");
             Entry entry = _save.Find(id);

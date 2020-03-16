@@ -9,7 +9,7 @@ namespace Callcenter.Models
     public class EntrySave
     {
         private static readonly string connection = "mongodb://127.0.0.1/";
-        private static readonly string dbname = "callcenter";
+        private static readonly string dbname = "Callcenter";
         //private readonly MongoClient client;
         //private readonly IMongoDatabase database;
         private readonly IMongoCollection<Entry> collection;
@@ -22,19 +22,19 @@ namespace Callcenter.Models
         public List<Entry> GetAll() => collection.Find(e => true).ToList();
         public List<Entry> GetNoZip() => collection.Find(e => e.zip == "00000").ToList();
 
-        internal void Remove(string id)=> collection.DeleteOne(e => e.id == id);
+        internal void Remove(MongoDB.Bson.ObjectId id)=> collection.DeleteOne(e => e.id == id);
 
         internal void Add(Entry entry)
         {
-            if (String.IsNullOrWhiteSpace(entry.id))
+            if (entry.id == null)
             {
-                entry.id = RandomString(28);
+                entry.id = MongoDB.Bson.ObjectId.GenerateNewId();
             }
             collection.InsertOne(entry);
         }
 
 
-        internal Entry Find(string id) => collection.Find(e => e.id == id).SingleOrDefault();
+        internal Entry Find(MongoDB.Bson.ObjectId id) => collection.Find(e => e.id == id).SingleOrDefault();
 
         internal void Mark(Entry entry) => collection.ReplaceOne(e => e.id == entry.id, entry);
 
