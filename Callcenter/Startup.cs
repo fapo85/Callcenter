@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Callcenter.Config;
 using Callcenter.Controllers;
 using Callcenter.Models;
 using Microsoft.AspNetCore.Builder;
@@ -28,6 +29,9 @@ namespace Callcenter
             services.AddControllersWithViews();
             services.AddSignalR();
             services.AddSingleton<EntrySave>();
+
+            services.AddOptions();
+            services.Configure<MongoDbConf>(Configuration.GetSection(nameof(MongoDbConf)));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

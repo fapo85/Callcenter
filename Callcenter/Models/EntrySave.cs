@@ -4,20 +4,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Callcenter.Config;
+using Microsoft.Extensions.Options;
 
 namespace Callcenter.Models
 {
     public class EntrySave
     {
-        private static readonly string connection = "mongodb://127.0.0.1/";
-        private static readonly string dbname = "Callcenter";
         //private readonly MongoClient client;
         //private readonly IMongoDatabase database;
         private readonly IMongoCollection<Entry> collection;
-        public EntrySave()
+        public EntrySave(IOptions<MongoDbConf> options)
         {
-            var client = new MongoClient(connection);
-            var database = client.GetDatabase(dbname);
+            var mongoDbConf = options.Value;
+            var client = new MongoClient(mongoDbConf.Connection);
+            var database = client.GetDatabase(mongoDbConf.DbName);
             collection = database.GetCollection<Entry>("requests");
         }
         public List<Entry> GetAll() => collection.Find(e => true).ToList();
