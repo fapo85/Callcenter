@@ -15,20 +15,20 @@
     function MarkItem(elmid) {
         var element = document.getElementById(elmid);
         if (!element.classList.contains("other")) {
-            if (!element.classList.contains("other")) { }
-            element.classList.add("marked");
-            var xhttp = new XMLHttpRequest();
-            xhttp.open("GET", "/Entry/Mark/" + elmid, true);
-            xhttp.send();
+            if (!element.classList.contains("other")) {
+                element.classList.add("marked");
+                var xhttp = new XMLHttpRequest();
+                xhttp.open("GET", "/Entry/Mark/" + elmid, true);
+                xhttp.send();
+            } else {
+                element.classList.remove("marked");
+                var xhttp = new XMLHttpRequest();
+                xhttp.open("GET", "/Entry/Free/" + elmid, true);
+                xhttp.send();
+            }
         } else {
-            element.classList.remove("marked");
-            var xhttp = new XMLHttpRequest();
-            xhttp.open("GET", "/Entry/Free/" + elmid, true);
-            xhttp.send();
+            alert("Element " + elmid + " wird schon bearbeiter");
         }
-    } else {
-        alert("Element " + elmid + " wird schon bearbeiter");
-    }
     }
     function DelItem(elmid) {
         var element = document.getElementById(elmid);
