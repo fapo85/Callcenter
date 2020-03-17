@@ -15,7 +15,7 @@
     function MarkItem(elmid) {
         const element = document.getElementById(elmid);
         if (element.classList.contains("other")) {
-            const isConfirmed = confirm("Element " + elmid + " wird schon bearbeitet. Bitte bestätigen Sie.");
+            const isConfirmed = confirm("Dieser Eintrag wird bereits bearbeitet. Bitte bestätigen Sie, dass sie diesen Eintrag übernehmen möchten.");
             if(!isConfirmed){
                 return;
             }
@@ -66,8 +66,8 @@
 <div id="tablespace">
     <table style="width: 100% ">
         <tr>
-            <th>Timestamp</th>
-            <th>phone</th>
+            <th>Zeitpunkt</th>
+            <th>Telefonnummer</th>
             <th>Text</th>
             <th>Bearbeiten</th>
             <th>Fertig</th>
@@ -78,8 +78,8 @@
                 <td>@item.timestamp</td>
                 <td>@item.phone</td>
                 <td>@item.request</td>
-                <td onclick="MarkItem('@item.id')"><i class="fas fa-user-edit"></i></td>
-                <td onclick="DelItem('@item.id')"><i class="fas fa-thumbs-up"></i></td>
+                <td onclick="MarkItem('@item.id')"><i class="fas fa-user-edit" title="In Bearbeitung nehmen"></i></td>
+                <td onclick="DelItem('@item.id')"><i class="fas fa-thumbs-up" title="Fertigstellen"></i></td>
             </tr>
         }
     </table>
