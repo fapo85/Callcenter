@@ -1,4 +1,5 @@
-﻿using MongoDB.Driver;
+﻿using MongoDB.Bson;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,7 @@ namespace Callcenter.Models
         public List<Entry> GetAll() => collection.Find(e => true).ToList();
         public List<Entry> GetNoZip() => collection.Find(e => e.zip == "00000").ToList();
 
-        internal void Remove(string id)=> collection.DeleteOne(e => e.id.ToString() == id);
+        internal void Remove(ObjectId id)=> collection.DeleteOne(e => e.id == id);
 
         internal void Add(Entry entry)
         {
@@ -34,7 +35,7 @@ namespace Callcenter.Models
         }
 
 
-        internal Entry Find(string id) => collection.Find(e => e.id.ToString() == id).SingleOrDefault();
+        internal Entry Find(ObjectId id) => collection.Find(e => e.id == id).SingleOrDefault();
 
         internal void Mark(Entry entry) => collection.ReplaceOne(e => e.id == entry.id, entry);
 

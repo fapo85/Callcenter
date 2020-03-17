@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Callcenter.Models;
 using Microsoft.AspNetCore.SignalR;
+using MongoDB.Bson;
 
 namespace Callcenter.Controllers
 {
@@ -29,7 +30,7 @@ namespace Callcenter.Controllers
         }
 
         [HttpPost("/Entry")]
-        public IActionResult Mark(string id)
+        public IActionResult Mark(ObjectId id)
         {
             Console.WriteLine($"Element {id} Marked");
             Entry entry = _save.Find(id);
@@ -42,7 +43,7 @@ namespace Callcenter.Controllers
         }
 
         [HttpGet("/Entry/Delete/{id}")]
-        public IActionResult Delete(string id)
+        public IActionResult Delete(ObjectId id)
         {
             Console.WriteLine($"Element {id} Delete");
             Entry entry = _save.Find(id);
