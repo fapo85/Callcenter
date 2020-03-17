@@ -30,7 +30,7 @@ namespace Callcenter.Controllers
         }
 
         [HttpPost("/Entry")]
-        public IActionResult Mark(ObjectId id)
+        public IActionResult Mark([FromBody]ObjectId id)
         {
             Console.WriteLine($"Element {id} Marked");
             Entry entry = _save.Find(id);
