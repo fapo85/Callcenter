@@ -24,14 +24,7 @@ namespace Callcenter.Models
 
         internal void Remove(MongoDB.Bson.ObjectId id)=> collection.DeleteOne(e => e.id == id);
 
-        internal void Add(Entry entry)
-        {
-            if (entry.id == null)
-            {
-                entry.id = MongoDB.Bson.ObjectId.GenerateNewId();
-            }
-            collection.InsertOne(entry);
-        }
+        internal void Add(Entry entry) => collection.InsertOne(entry);
 
 
         internal Entry Find(MongoDB.Bson.ObjectId id) => collection.Find(e => e.id == id).SingleOrDefault();
