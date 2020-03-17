@@ -36,9 +36,23 @@ namespace Callcenter.Controllers
             Entry entry = _save.Find(new ObjectId(id));
             if (entry != null)
             {
-                _save.Mark(entry);
+                entry.marked = true;
+                _save.Replace(entry);
             }
             _hubContext.Clients.All.SendAsync("marked", id).Wait();
+            return Ok();
+        }
+        [HttpGet("/Entry/Free/{id}")]
+        public IActionResult UnMark(string id)
+        {
+            Console.WriteLine($"Element {id} Free");
+            Entry entry = _save.Find(new ObjectId(id));
+            if (entry != null)
+            {
+                entry.marked = false;
+                _save.Replace(entry);
+            }
+            _hubContext.Clients.All.SendAsync("free", id).Wait();
             return Ok();
         }
 

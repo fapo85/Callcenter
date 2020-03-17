@@ -37,7 +37,7 @@ namespace Callcenter.Models
 
         internal Entry Find(ObjectId id) => collection.Find(e => e.id == id).SingleOrDefault();
 
-        internal void Mark(Entry entry) => collection.ReplaceOne(e => e.id == entry.id, entry);
+        internal void Replace(Entry entry) => collection.ReplaceOne(e => e.id == entry.id, entry);
 
 
         public static Random random = new Random();
