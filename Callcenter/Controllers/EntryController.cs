@@ -30,10 +30,10 @@ namespace Callcenter.Controllers
         }
 
         [HttpPost("/Entry")]
-        public IActionResult Mark([FromBody]ObjectId id)
+        public IActionResult Mark(string id)
         {
             Console.WriteLine($"Element {id} Marked");
-            Entry entry = _save.Find(id);
+            Entry entry = _save.Find(new ObjectId(id));
             if (entry != null)
             {
                 _save.Mark(entry);
@@ -43,13 +43,13 @@ namespace Callcenter.Controllers
         }
 
         [HttpGet("/Entry/Delete/{id}")]
-        public IActionResult Delete(ObjectId id)
+        public IActionResult Delete(string id)
         {
             Console.WriteLine($"Element {id} Delete");
-            Entry entry = _save.Find(id);
+            Entry entry = _save.Find(new ObjectId(id));
             if (entry != null)
             {
-                _save.Remove(id);
+                _save.Remove(new ObjectId(id));
             }
             _hubContext.Clients.All.SendAsync("delete", id).Wait();
             return View("Index", entry);
