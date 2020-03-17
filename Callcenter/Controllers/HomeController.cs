@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Callcenter.Models;
+using MongoDB.Bson;
 
 namespace Callcenter.Controllers
 {
@@ -24,21 +25,34 @@ namespace Callcenter.Controllers
             return View(_save.GetNoZip());
         }
         [HttpPost]
-        public IActionResult Index(string phone, EntryRequest request, string zip)
+        public IActionResult Index(string id, string phone, EntryRequest request, string zip)
         {
             if (String.IsNullOrWhiteSpace(zip))
             {
                 zip = "00000";
             }
-            Entry entry = new Entry()
-            {
-                //id = RandomString(14),
-                timestamp = DateTime.Now,
-                phone = phone,
-                zip = zip,
-                request = request
-            };
-            _save.Add(entry);
+            Entry entry;
+            if (String.IsNullOrWhiteSpace(id) || id.Equals("000000000000000000000000")){
+                entry = new Entry()
+                {
+                    timestamp = DateTime.Now,
+                    phone = phone,
+                    zip = zip,
+                    request = request
+                };
+                _save.Add(entry);
+            }
+            else{
+                entry = new Entry()
+                {
+                    id = new ObjectId(id),
+                    timestamp = DateTime.Now,
+                    phone = phone,
+                    zip = zip,
+                    request = request
+                };
+                _save.Replace(entry);
+            }            
             return View(_save.GetNoZip());
         }
 

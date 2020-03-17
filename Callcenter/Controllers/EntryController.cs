@@ -62,36 +62,13 @@ namespace Callcenter.Controllers
         {
             Console.WriteLine($"Element {id} Delete");
             Entry entry = _save.Find(new ObjectId(id));
-            if (entry != null)
-            {
-                _save.Remove(new ObjectId(id));
-            }
+            //Wird nicht gelöscht
+            //if (entry != null)
+            //{
+            //    _save.Remove(new ObjectId(id));
+            //}
             _hubContext.Clients.All.SendAsync("delete", id).Wait();
             return View("Index", entry);
-        }
-        [HttpPost("/AddEntry")]
-        public IActionResult AddEntry(string token, string phone, string zip, EntryRequest request)
-        {
-            if (token != null && token.Equals(SECRETTOKKEN))
-            {
-                if (String.IsNullOrWhiteSpace(zip))
-                {
-                    zip = "00000";
-                }
-                Entry entry = new Entry()
-                {
-                    timestamp = DateTime.Now,
-                    phone = phone,
-                    zip = zip,
-                    request = request
-                };
-                _save.Add(entry);
-                return Ok();
-            }
-            else
-            {
-                throw new AuthenticationException("Tokken Error");
-            }
         }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

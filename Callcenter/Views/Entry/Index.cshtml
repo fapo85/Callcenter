@@ -1,14 +1,13 @@
 ﻿@model  Callcenter.Models.Entry
     @{
-        ViewData["Title"] = "Callcenter";
+        ViewData["Title"] = "Neuer Eintrag";
     }
-<link rel="stylesheet" href="EntryIndex.scss" type="text/css" />
-
     <div class="text-center">
         <h1 class="display-4">@ViewData["Title"]</h1>
     </div>
     <div id="addspace">
         <form method="post" action="/">
+            <input id="id" name="id" type="hidden" value="@Model.id">
             <div class="form-group">
                 <label for="phone">Telefonnummer:</label><br>
                 <input class="form-control" type="text" id="phone" name="phone" value="@Model.phone"><br>
