@@ -22,12 +22,19 @@ namespace Callcenter.Models
         public List<Entry> GetAll() => collection.Find(e => true).ToList();
         public List<Entry> GetNoZip() => collection.Find(e => e.zip == "00000").ToList();
 
-        internal void Remove(MongoDB.Bson.ObjectId id)=> collection.DeleteOne(e => e.id == id);
+        internal void Remove(string id)=> collection.DeleteOne(e => e.id.ToString() == id);
 
-        internal void Add(Entry entry) => collection.InsertOne(entry);
+        internal void Add(Entry entry)
+        {
+            if (entry.id == null)
+            {
+                entry.id = MongoDB.Bson.ObjectId.GenerateNewId();
+            }
+            collection.InsertOne(entry);
+        }
 
 
-        internal Entry Find(MongoDB.Bson.ObjectId id) => collection.Find(e => e.id == id).SingleOrDefault();
+        internal Entry Find(string id) => collection.Find(e => e.id.ToString() == id).SingleOrDefault();
 
         internal void Mark(Entry entry) => collection.ReplaceOne(e => e.id == entry.id, entry);
 
