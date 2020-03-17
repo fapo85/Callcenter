@@ -70,7 +70,7 @@ namespace Callcenter.Controllers
             return View("Index", entry);
         }
         [HttpPost("/AddEntry")]
-        public IActionResult AddEntry(string token, string phone, string zip, string request)
+        public IActionResult AddEntry(string token, string phone, string zip, EntryRequest request)
         {
             if (token != null && token.Equals(SECRETTOKKEN))
             {
@@ -83,7 +83,7 @@ namespace Callcenter.Controllers
                     timestamp = DateTime.Now,
                     phone = phone,
                     zip = zip,
-                    requestText = Entry.ParseRequest(request)
+                    request = request
                 };
                 _save.Add(entry);
                 return Ok();

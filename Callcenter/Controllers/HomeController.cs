@@ -24,7 +24,7 @@ namespace Callcenter.Controllers
             return View(_save.GetNoZip());
         }
         [HttpPost]
-        public IActionResult Index(string phone, string requestText, string zip)
+        public IActionResult Index(string phone, EntryRequest request, string zip)
         {
             if (String.IsNullOrWhiteSpace(zip))
             {
@@ -36,7 +36,7 @@ namespace Callcenter.Controllers
                 timestamp = DateTime.Now,
                 phone = phone,
                 zip = zip,
-                requestText = requestText
+                request = request
             };
             _save.Add(entry);
             return View(_save.GetNoZip());
