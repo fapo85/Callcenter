@@ -13,37 +13,42 @@
 </style>
 <script type="text/javascript">
     function MarkItem(elmid) {
-        var element = document.getElementById(elmid);
-        if (!element.classList.contains("other")) {
-            if (!element.classList.contains("marked")) {
-                element.classList.add("marked");
-                element.childNodes.forEach(item => {
-                    item.childNodes.forEach(itm => {
-                        if (itm.classList != undefined && itm.classList.contains("fa-user-edit")) {
-                            itm.classList.add("fa-times");
-                            itm.classList.remove("fa-user-edit");
-                        }
-                    });
-                });
-                var xhttp = new XMLHttpRequest();
-                xhttp.open("GET", "/Entry/Mark/" + elmid, true);
-                xhttp.send();
-            } else {
-                element.classList.remove("marked");
-                element.childNodes.forEach(item => {
-                    item.childNodes.forEach(itm => {
-                        if (itm.classList != undefined && itm.classList.contains("fa-times")) {
-                            itm.classList.add("fa-user-edit");
-                            itm.classList.remove("fa-times");
-                        }
-                    });
-                });
-                var xhttp = new XMLHttpRequest();
-                xhttp.open("GET", "/Entry/Free/" + elmid, true);
-                xhttp.send();
+        const element = document.getElementById(elmid);
+        if (element.classList.contains("other")) {
+            const isConfirmed = confirm("Element " + elmid + " wird schon bearbeitet. Bitte bestätigen Sie.");
+            if(!isConfirmed){
+                return;
             }
+            if(element.classList.contains("other")){
+                element.classList.remove("other");
+            }
+        }
+        if (!element.classList.contains("marked")) {
+            element.classList.add("marked");
+            element.childNodes.forEach(item => {
+                item.childNodes.forEach(itm => {
+                    if (itm.classList != undefined && itm.classList.contains("fa-user-edit")) {
+                        itm.classList.add("fa-times");
+                        itm.classList.remove("fa-user-edit");
+                    }
+                });
+            });
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("GET", "/Entry/Mark/" + elmid, true);
+            xhttp.send();
         } else {
-            alert("Element " + elmid + " wird schon bearbeiter");
+            element.classList.remove("marked");
+            element.childNodes.forEach(item => {
+                item.childNodes.forEach(itm => {
+                    if (itm.classList != undefined && itm.classList.contains("fa-times")) {
+                        itm.classList.add("fa-user-edit");
+                        itm.classList.remove("fa-times");
+                    }
+                });
+            });
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("GET", "/Entry/Free/" + elmid, true);
+            xhttp.send();
         }
     }
     function DelItem(elmid) {
