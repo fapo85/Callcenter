@@ -18,10 +18,6 @@
             if (!element.classList.contains("marked")) {
                 element.classList.add("marked");
                 element.childNodes.forEach(item => {
-                    //if (item.classList != undefined && item.classList.contains("fa-user-edit")) {
-                    //    item.classList.add("fa-times");
-                    //    item.classList.remove("fa-user-edit");
-                    //}
                     item.childNodes.forEach(itm => {
                         if (itm.classList != undefined && itm.classList.contains("fa-user-edit")) {
                             itm.classList.add("fa-times");
@@ -35,10 +31,6 @@
             } else {
                 element.classList.remove("marked");
                 element.childNodes.forEach(item => {
-                    //if (item.classList != undefined && item.classList.contains("fa-times")) {
-                    //    item.classList.add("fa-user-edit");
-                    //    item.classList.remove("fa-times");
-                    //}
                     item.childNodes.forEach(itm => {
                         if (itm.classList != undefined && itm.classList.contains("fa-times")) {
                             itm.classList.add("fa-user-edit");

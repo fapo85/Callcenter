@@ -8,12 +8,13 @@ using Microsoft.Extensions.Logging;
 using Callcenter.Models;
 using Microsoft.AspNetCore.SignalR;
 using MongoDB.Bson;
+using System.Security.Authentication;
 
 namespace Callcenter.Controllers
 {
     public class EntryController : Controller
     {
-        
+        private static string SECRETTOKKEN = "";
         private readonly ILogger<HomeController> _logger;
         private readonly IHubContext<SignalRHub> _hubContext;
         private readonly EntrySave _save;
@@ -69,21 +70,28 @@ namespace Callcenter.Controllers
             return View("Index", entry);
         }
         [HttpPost("/AddEntry")]
-        public IActionResult AddEntry(string phone, string requestText, string zip)
+        public IActionResult AddEntry(string token, string phone, string zip, string request)
         {
-            if (String.IsNullOrWhiteSpace(zip))
+            if (token != null && token.Equals(SECRETTOKKEN))
             {
-                zip = "00000";
+                if (String.IsNullOrWhiteSpace(zip))
+                {
+                    zip = "00000";
+                }
+                Entry entry = new Entry()
+                {
+                    timestamp = DateTime.Now,
+                    phone = phone,
+                    zip = zip,
+                    requestText = Entry.ParseRequest(request)
+                };
+                _save.Add(entry);
+                return Ok();
             }
-            Entry entry = new Entry()
+            else
             {
-                timestamp = DateTime.Now,
-                phone = phone,
-                zip = zip,
-                requestText = requestText
-            };
-            _save.Add(entry);
-            return Ok();
+                throw new AuthenticationException("Tokken Error");
+            }
         }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
