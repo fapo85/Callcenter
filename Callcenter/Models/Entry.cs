@@ -13,6 +13,7 @@ namespace Callcenter.Models
         public string zip { get; set; }
         public string requestText { get; set; }
         public bool marked { get; set; }
+        public object __v { get; set; }
         public string CString => marked ? "other" : string.Empty;
     }
 }
