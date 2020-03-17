@@ -7,6 +7,7 @@ namespace Callcenter.Models
 {
     public class Entry
     {
+        public Entry() { }
         public MongoDB.Bson.ObjectId id { get; set; } = MongoDB.Bson.ObjectId.GenerateNewId();
         public DateTime timestamp { get; set; }
         public string phone { get; set; }
