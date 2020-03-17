@@ -18,10 +18,16 @@
             if (!element.classList.contains("marked")) {
                 element.classList.add("marked");
                 element.childNodes.forEach(item => {
-                    if (item.classList != undefined && item.classList.contains("fa-user-edit")) {
-                        item.classList.add("fa-times");
-                        item.classList.remove("fa-user-edit");
-                    }
+                    //if (item.classList != undefined && item.classList.contains("fa-user-edit")) {
+                    //    item.classList.add("fa-times");
+                    //    item.classList.remove("fa-user-edit");
+                    //}
+                    item.childNodes.forEach(itm => {
+                        if (item.classList != undefined && item.classList.contains("fa-user-edit")) {
+                            item.classList.add("fa-times");
+                            item.classList.remove("fa-user-edit");
+                        }
+                    });
                 });
                 var xhttp = new XMLHttpRequest();
                 xhttp.open("GET", "/Entry/Mark/" + elmid, true);
@@ -29,10 +35,16 @@
             } else {
                 element.classList.remove("marked");
                 element.childNodes.forEach(item => {
-                    if (item.classList != undefined && item.classList.contains("fa-times")) {
-                        item.classList.add("fa-user-edit");
-                        item.classList.remove("fa-times");
-                    }
+                    //if (item.classList != undefined && item.classList.contains("fa-times")) {
+                    //    item.classList.add("fa-user-edit");
+                    //    item.classList.remove("fa-times");
+                    //}
+                    item.childNodes.forEach(itm => {
+                        if (item.classList != undefined && item.classList.contains("fa-times")) {
+                            item.classList.add("fa-user-edit");
+                            item.classList.remove("fa-times");
+                        }
+                    });
                 });
                 var xhttp = new XMLHttpRequest();
                 xhttp.open("GET", "/Entry/Free/" + elmid, true);
