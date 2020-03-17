@@ -29,7 +29,7 @@ namespace Callcenter.Controllers
             return View(new Entry());
         }
 
-        [HttpPost("/Entry")]
+        [HttpGet("/Entry/Mark/{id}")]
         public IActionResult Mark(string id)
         {
             Console.WriteLine($"Element {id} Marked");

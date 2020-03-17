@@ -17,9 +17,8 @@
         if (!element.classList.contains("other")) {
             element.classList.add("marked");
             var xhttp = new XMLHttpRequest();
-            xhttp.open("POST", "/Entry", true);
-            xhttp.setRequestHeader("Content-type", "text/plain");
-            xhttp.send("id="+elmid);
+            xhttp.open("GET", "/Entry/Mark/" + elmid, true);
+            xhttp.send();
         } else {
             alert("Element " + elmid + " wird schon bearbeiter");
         }
