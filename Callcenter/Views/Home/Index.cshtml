@@ -23,9 +23,9 @@
                     //    item.classList.remove("fa-user-edit");
                     //}
                     item.childNodes.forEach(itm => {
-                        if (item.classList != undefined && item.classList.contains("fa-user-edit")) {
-                            item.classList.add("fa-times");
-                            item.classList.remove("fa-user-edit");
+                        if (itm.classList != undefined && itm.classList.contains("fa-user-edit")) {
+                            itm.classList.add("fa-times");
+                            itm.classList.remove("fa-user-edit");
                         }
                     });
                 });
@@ -40,9 +40,9 @@
                     //    item.classList.remove("fa-times");
                     //}
                     item.childNodes.forEach(itm => {
-                        if (item.classList != undefined && item.classList.contains("fa-times")) {
-                            item.classList.add("fa-user-edit");
-                            item.classList.remove("fa-times");
+                        if (itm.classList != undefined && itm.classList.contains("fa-times")) {
+                            itm.classList.add("fa-user-edit");
+                            itm.classList.remove("fa-times");
                         }
                     });
                 });
