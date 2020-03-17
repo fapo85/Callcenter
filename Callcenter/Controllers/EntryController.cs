@@ -54,7 +54,23 @@ namespace Callcenter.Controllers
             _hubContext.Clients.All.SendAsync("delete", id).Wait();
             return View("Index", entry);
         }
-
+        [HttpPost("/Entry/Add")]
+        public IActionResult Index(string phone, string requestText, string zip)
+        {
+            if (String.IsNullOrWhiteSpace(zip))
+            {
+                zip = "00000";
+            }
+            Entry entry = new Entry()
+            {
+                timestamp = DateTime.Now,
+                phone = phone,
+                zip = zip,
+                requestText = requestText
+            };
+            _save.Add(entry);
+            return Ok();
+        }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
