@@ -40,32 +40,26 @@ namespace Callcenter.Models
 
         public async void Listen()
         {
-            try
-            {
-                var options = new ChangeStreamOptions { FullDocument = ChangeStreamFullDocumentOption.UpdateLookup };
-                var pipeline = new EmptyPipelineDefinition<ChangeStreamDocument<Entry>>()
-                    .Match("{ operationType: { $in: [ 'insert','replace', 'update'  ] }}")
-                    .Project("{ fullDocument: 1 }");
+            var options = new ChangeStreamOptions { FullDocument = ChangeStreamFullDocumentOption.UpdateLookup };
+            var pipeline = new EmptyPipelineDefinition<ChangeStreamDocument<Entry>>()
+                .Match("{ operationType: { $in: [ 'insert','replace', 'update'  ] }}")
+                .Project("{ fullDocument: 1 }");
 
-                using var cursor = collection.Watch(pipeline, options);
-                await cursor.ForEachAsync(change =>
-                {
-                    var initialString = change.Elements.ToList()[1].Value.ToString();
-                    if (initialString.Contains("00000"))
-                    {
-                        var json = initialString.Replace("ObjectId(", "").Replace("ISODate(", "").Replace("\")", "\"");
-                        _hubContext.Clients.All.SendAsync("insert", json);
-                    }
-                });
-            }
-            catch (Exception e)
+            using var cursor = collection.Watch(pipeline, options);
+            await cursor.ForEachAsync(change =>
             {
-                Console.WriteLine("Setup failed: \n" + e);
-            }
+                var initialString = change.Elements.ToList()[1].Value.ToString();
+                if (initialString.Contains("00000"))
+                {
+                    var json = initialString.Replace("ObjectId(", "").Replace("ISODate(", "").Replace("\")", "\"");
+                    _hubContext.Clients.All.SendAsync("insert", json);
+                }
+            });
         }
 
         //public List<Entry> GetAll() => collection.Find(e => true).SortBy(e => e.timestamp).ToList();
-        public List<Entry> GetAll()        {
+        public List<Entry> GetAll()
+        {
             var list = collection.Find(e => true).ToList();
             list.Sort(Entry.Compare);
             return list;
