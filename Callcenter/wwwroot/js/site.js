@@ -44,6 +44,12 @@ connection.on("filldata", function (data) {
     if (zip && zip != undefined && zip != null) {
         zip.value = data.zip;
     }
+    const radios = document.getElementsByName("request");
+    if (radios && radios != undefined && radios != null) {
+        for (var i = 0; i < radios.length; i++) {
+            radios[i].checked = (radios[i].value == data.request);
+        }
+    }
 });
 function MarkItem(elmid) {
     const element = document.getElementById(elmid);
@@ -58,9 +64,8 @@ function MarkItem(elmid) {
     }
     if (!element.classList.contains("marked")) {
         Array.from(document.getElementsByClassName("marked")).forEach(elm => {
-            var xhttp = new XMLHttpRequest();
-            xhttp.open("GET", "/Entry/Free/" + element.id, true);
-            xhttp.send();
+7
+            connection.invoke("FreeEntry", elm.id);
             elm.childNodes.forEach(item => {
                 item.childNodes.forEach(itm => {
                     if (itm.classList != undefined && itm.classList.contains("fa-times")) {
@@ -80,11 +85,7 @@ function MarkItem(elmid) {
                 }
             });
         });
-        connection.invoke("MarkEntry", elmid).done(data => {
-            document.getElementById('id').value = data.id;
-            document.getElementById('phone').value = data.phone;
-            document.getElementById('zip').value = data.zip;
-        });
+        connection.invoke("MarkEntry", elmid);
     } else {
         element.classList.remove("marked");
         element.childNodes.forEach(item => {
@@ -99,6 +100,12 @@ function MarkItem(elmid) {
         document.getElementById('id').value = "";
         document.getElementById('phone').value = "";
         document.getElementById('zip').value = "";
+        const radios = document.getElementsByName("request");
+        for (var i = 0; i < radios.length; i++) {
+            if (radios[i].checked) {
+                radios[i].checked = false;
+            }
+        }
     }
 }
 function DelItem(elmid) {
