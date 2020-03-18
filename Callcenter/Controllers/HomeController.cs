@@ -43,14 +43,14 @@ namespace Callcenter.Controllers
                 _save.Add(entry);
             }
             else{
-                entry = new Entry()
-                {
-                    id = new ObjectId(id),
-                    timestamp = DateTime.Now,
-                    phone = phone,
-                    zip = zip,
-                    request = request
-                };
+                entry = _save.Find(new ObjectId(id));
+                if(entry == null){
+                    entry = new Entry();
+                    entry.id = new ObjectId(id);
+                }
+                entry.phone = phone;
+                entry.zip = zip;
+                entry.request = request;
                 _save.Replace(entry);
             }            
             return View(_save.GetNoZip());
