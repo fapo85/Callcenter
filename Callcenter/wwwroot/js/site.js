@@ -224,6 +224,17 @@ function AddItem() {
         document.getElementById('zip').value,
         request
     );
+    var id = document.getElementById('id').value;
+    if (id && id != undefined && id != null && id !== "") {
+        var element = document.getElementById(id);
+        var array = Array.from(element.getElementsByClassName("btn-secondary"));
+        if (array && array != undefined && array != null) {
+            array.forEach(itm => {
+                itm.classList.remove("btn-secondary");
+                itm.classList.add("btn-success");
+            });
+        }
+    }
     return false;
 }
 function validatePhone() {
