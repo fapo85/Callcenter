@@ -72,11 +72,12 @@ body {
 }
 /* Home index */
 .marked {
-    background-color: rosybrown;
+    background-color: #faba00;
 }
 
 .other {
-    background-color: aqua;
+    background-color: #00aaab;
+    color: gray;
 }
 
 .fixed {

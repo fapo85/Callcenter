@@ -158,7 +158,23 @@ function MarkItem(elmid) {
         }
     }
 }
-
+function bevorunload() {
+    //const allelements = Array.from(document.getElementsByClassName("marked"));
+    //if (allelements.length > 0) {
+    //    const isConfirmed = confirm("Es ist noch ein Beitrag in Bearbeitung. Schließen?");
+    //    if (!isConfirmed) {
+    //        return;
+    //    }
+    //    allelements.forEach(item => {
+    //        connection.invoke("FreeEntry", item.id);
+    //        Array.from(elm.getElementsByClassName("fa-times")).forEach(itm => {
+    //            itm.classList.add("fa-user-edit");
+    //            itm.classList.remove("fa-times");
+    //        });
+    //        elm.classList.remove("marked");
+    //    });
+    //}
+}
 function DelItem(elmid) {
     var element = document.getElementById(elmid);
     if (element.classList.contains("marked")) {
