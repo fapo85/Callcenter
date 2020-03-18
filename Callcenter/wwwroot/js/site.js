@@ -210,7 +210,7 @@ function AddItem() {
 function validatePhone() {
     const phone = document.getElementById("phone");
     if (phone && phone != undefined && phone != null) {
-        var rgx = new RegExp("^(0049\d{5,}|0[1-9]\d{4,}|\+49\d{5,})$",);
+        var rgx = new RegExp("^(0049\\d{5,}|0[1-9]\\d{4,}|\\+49\\d{5,})$");
         if (phone.value.match(rgx)) {
             phone.classList.remove("invalid");
             return true;
@@ -223,7 +223,7 @@ function validatePhone() {
 function validateZip() {
     const zip = document.getElementById("zip");
     if (zip && zip != undefined && zip != null) {
-        var rgx = new RegExp("^\d{5}$",);
+        var rgx = new RegExp("^\\d{5}$",);
         if (zip.value.match(rgx)) {
             zip.classList.remove("invalid");
             return true;

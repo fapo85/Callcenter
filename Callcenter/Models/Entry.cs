@@ -35,7 +35,7 @@ namespace Callcenter.Models
             phone = phone.Replace("-", string.Empty);
             phone = phone.Replace("\t", string.Empty);
             if (phone.StartsWith('+')){
-                phone = phone.Substring(0, 1);
+                phone = phone.Substring(1, phone.Length -1);
                 phone = "00" + phone;
             }
             ValidateTel(phone);
@@ -54,7 +54,7 @@ namespace Callcenter.Models
             }
             else if (firstFour == "0049")
             {
-                firstFour = "0" + phoneNumber.Substring(4, 7);
+                firstFour = "0" + phoneNumber.Substring(4, 3);
             }
 
             switch (firstFour)
