@@ -10,6 +10,11 @@
     .other {
         background-color: aqua;
     }
+    .fixed{
+        position: fixed;
+        top: 0;
+        bottom: 0;
+    }
 </style>
 <script type="text/javascript">
     function MarkItem(elmid) {
@@ -98,7 +103,7 @@
     <!-- Second Half -->
 
     <div class="col-md-3 p-0 bg-white h-md-100 loginarea">
-        <div class="d-md-flex align-items-center h-md-100 p-5 justify-content-center">
+        <div class="d-md-flex align-items-center h-md-100 p-5 justify-content-center fixed">
             <form method="post" action="/">
                 <input id="id" name="id" type="hidden">
                 <div class="form-group">
