@@ -14,7 +14,6 @@ namespace Callcenter.Controllers
 {
     public class EntryController : Controller
     {
-        private static string SECRETTOKKEN = "";
         private readonly ILogger<HomeController> _logger;
         private readonly IHubContext<SignalRHub> _hubContext;
         private readonly EntrySave _save;

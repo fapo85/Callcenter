@@ -1,41 +1,11 @@
 ﻿@model Callcenter.Models.Entry
 @{
     ViewData["Title"] = "Neuer Eintrag";
+
 }
 <div class="text-center">
     <h1 class="display-4">@ViewData["Title"]</h1>
 </div>
 <div id="addspace">
-<<<<<<< Updated upstream
-    <form method="post" action="/">
-        <input id="id" name="id" type="hidden" value="@Model.id">
-        <div class="form-group">
-            <label for="phone">Telefonnummer:</label><br>
-            <input class="form-control" type="text" id="phone" name="phone" value="@Model.phone"><br>
-        </div>
-        <div class="form-group">
-            <label for="zip">Postleitzahl:</label><br>
-            <input class="form-control test" type="number" id="zip" name="zip" value="@Model.zip"><br>
-        </div>
-        <div class="form-group">
-            <label for="request">Anfrage:</label><br>
-            <select class="form-control" id="request" name="request">
-                @foreach (EntryRequest er in (EntryRequest[])Enum.GetValues(typeof(EntryRequest)))
-                {
-                    if (Model.request == er)
-                    {
-                        <option value="@((int)er)" selected>@er.ToString()</option>
-                    }
-                    else
-                    {
-                        <option value="@((int)er)">@er.ToString()</option>
-                    }
-                }
-            </select><br>
-        </div>
-        <input type="submit" value="Submit">
-    </form>
-=======
     <partial name="_Form" />
->>>>>>> Stashed changes
 </div>
