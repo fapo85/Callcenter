@@ -176,20 +176,26 @@ function DelItem(elmid) {
         alert("Um den Eintrag abschließen zu können, müssen Sie ihn zunächst bearbeiten.");
     }
 }
-function AddItem() {
-    var request;
-    if(!validatePhone()){
+function ValidateAll() {
+    if (!validatePhone()) {
         ShowErrorMsg("Telefonnummer ist nicht Korregt", 2000);
-        return;
+        return true;
     }
     if (!validateZip()) {
         ShowErrorMsg("Postleitzahl ist nicht Korregt", 2000);
-        return;
+        return true;
     }
     if (!validateAuswahl()) {
         ShowErrorMsg("Auswahl ist nicht Korregt", 2000);
-        return;
+        return true;
     }
+    return false;
+}
+function AddItem() {
+    if (ValidateAll()) {
+        return false;
+    }
+    var request;
     const radios = document.getElementsByName("request");
     for (var i = 0; i < radios.length; i++) {
         if (radios[i].checked) {
@@ -220,7 +226,7 @@ function validatePhone() {
 function validateZip() {
     const zip = document.getElementById("zip");
     if (zip && zip != undefined && zip != null) {
-        var rgx = new RegExp("^\\d{5}$",);
+        var rgx = new RegExp("^\\d{5}$");
         if (zip.value.match(rgx)) {
             zip.classList.remove("invalid");
             return true;
@@ -250,8 +256,7 @@ function validateAuswahl() {
     return ok;
 }
 function ShowErrorMsg(msg, time) {
-    console.error("Fehler:");
-    console.error(msg);
+    console.error("Fehler: " + msg);
     const requestFinish = document.getElementById('requestFinish');
     const requestForm = document.getElementById('requestForm');
     const ErrorWindow = document.getElementById('ErrorWindow');
