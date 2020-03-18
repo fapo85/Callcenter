@@ -178,15 +178,15 @@ function DelItem(elmid) {
 }
 function ValidateAll() {
     if (!validatePhone()) {
-        ShowErrorMsg("Telefonnummer ist nicht Korregt", 2000);
+        ShowErrorMsg("Telefonnummer ist nicht korrekt", 2000);
         return true;
     }
     if (!validateZip()) {
-        ShowErrorMsg("Postleitzahl ist nicht Korregt", 2000);
+        ShowErrorMsg("Postleitzahl ist nicht korrekt", 2000);
         return true;
     }
     if (!validateAuswahl()) {
-        ShowErrorMsg("Auswahl ist nicht Korregt", 2000);
+        ShowErrorMsg("Auswahl ist nicht korrekt", 2000);
         return true;
     }
     return false;
