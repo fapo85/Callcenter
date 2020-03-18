@@ -32,6 +32,7 @@ namespace Callcenter.Models
         {
             phone = phone.Trim();
             phone = phone.Replace(" ", string.Empty);
+            phone = phone.Replace("-", string.Empty);
             phone = phone.Replace("\t", string.Empty);
             if (phone.StartsWith('+')){
                 phone = phone.Substring(0, 1);
@@ -43,11 +44,11 @@ namespace Callcenter.Models
         }
         public static void ValidateTel(string phoneNumber)
         {
-            if (phoneNumber.Length < 8)
+            if (phoneNumber.Length < 6)
                 throw new Exception("Nummer zu klein");
             string firstFour = phoneNumber.Substring(0, 4);
 
-            if (firstFour == "00" && firstFour != "0049")
+            if (firstFour.StartsWith("00") && firstFour != "0049")
             {
                 throw new Exception("Not a german number!");
             }
@@ -70,10 +71,10 @@ namespace Callcenter.Models
             {
                 if (!char.IsDigit(c))
                 {
-                    throw new Exception("Phone besteht nicht nur aus Buchstaben.");
+                    throw new Exception("Phone besteht nicht nur aus Zahlen.");
                 }
             }
-            Regex rgx = new Regex(@"^(0049|+49|0)\d{7,}?$");
+            Regex rgx = new Regex(@"^(0049\d{5,}|0[1-9]\d{4,}|\+49\d{5,})$");
             if (!rgx.IsMatch(phoneNumber))
             {
                 throw new Exception("Phone RegEX Fehler.");
