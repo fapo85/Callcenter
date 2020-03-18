@@ -4,6 +4,7 @@ using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Callcenter.Models
@@ -30,6 +31,8 @@ namespace Callcenter.Models
         public void Validate()
         {
             phone = phone.Trim();
+            phone = phone.Replace(" ", string.Empty);
+            phone = phone.Replace("\t", string.Empty);
             if (phone.StartsWith('+')){
                 phone = phone.Substring(0, 1);
                 phone = "00" + phone;
@@ -69,6 +72,11 @@ namespace Callcenter.Models
                 {
                     throw new Exception("Phone besteht nicht nur aus Buchstaben.");
                 }
+            }
+            Regex rgx = new Regex(@"^(0049|+49|0)\d{7,}?$");
+            if (!rgx.IsMatch(phoneNumber))
+            {
+                throw new Exception("Phone RegEX Fehler.");
             }
         }
         public static void ValidateZip(string zip)
