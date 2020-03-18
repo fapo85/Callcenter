@@ -3,7 +3,10 @@ using Microsoft.AspNetCore.SignalR;
 using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Json;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Callcenter.Controllers
@@ -45,39 +48,50 @@ namespace Callcenter.Controllers
 
         public Task AddOrModifyEntry(string id, string phone, string zip, string request)
         {
-            if (String.IsNullOrWhiteSpace(zip))
+            Entry entry = entry = new Entry()
             {
-                zip = "00000";
-            }
-            Entry entry;
-            if (String.IsNullOrWhiteSpace(id) || id.Equals("000000000000000000000000"))
+                timestamp = DateTime.Now,
+            };
+            try
             {
-                entry = new Entry()
+                if (String.IsNullOrWhiteSpace(zip))
                 {
-                    timestamp = DateTime.Now,
-                };
-            }
-            else
-            {
-                var oldvalue = _save.Find(new ObjectId(id));
-                entry = new Entry()
+                    zip = "00000";
+                }
+                if (!(String.IsNullOrWhiteSpace(id) || id.Equals("000000000000000000000000")))
                 {
-                    timestamp = oldvalue.timestamp,
-                };
-            }
-            entry.modifyts = DateTime.Now;
-            entry.phone = phone;
-            entry.zip = zip;
-            entry.request = ParseRequest(request);
-            entry.Validate();
-            _save.Add(entry);
-            return Clients.Caller.SendAsync("SaveOK", new EntryFill()
+                    var oldvalue = _save.Find(new ObjectId(id));
+                    entry = new Entry()
+                    {
+                        timestamp = oldvalue.timestamp,
+                    };
+                }
+                entry.modifyts = DateTime.Now;
+                entry.phone = phone;
+                entry.zip = zip;
+                entry.request = ParseRequest(request);
+                entry.Validate();
+                _save.Add(entry);
+                return Clients.Caller.SendAsync("SaveOK", new EntryFill()
+                {
+                    id = entry.id.ToString(),
+                    phone = entry.phone,
+                    zip = entry.zip,
+                    request = (int)entry.request
+                });
+            }catch(Exception e)
             {
-                id = entry.id.ToString(),
-                phone = entry.phone,
-                zip = entry.zip,
-                request = (int)entry.request
-            });
+                StringBuilder sb = new StringBuilder();
+                sb.Append("Fehler: ");
+                sb.AppendLine(e.Message);
+                DataContractJsonSerializer dcjs = new DataContractJsonSerializer(entry.GetType());
+                using (MemoryStream ms = new MemoryStream()){
+                    dcjs.WriteObject(ms, entry);
+                    sb.AppendLine(Encoding.Default.GetString(ms.ToArray()));
+                }
+                Console.WriteLine(sb.ToString());
+                return Clients.Caller.SendAsync("Error", e.Message);
+            }
         }
 
 

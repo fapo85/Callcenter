@@ -41,6 +41,23 @@ connection.on("SaveOK", function (data) {
         }, 800);
     }
 });
+connection.on("Error", function (data) {
+    console.error("Fehler:");
+    console.error(data);
+    const requestFinish = document.getElementById('requestFinish');
+    const requestForm = document.getElementById('requestForm');
+    const ErrorWindow = document.getElementById('ErrorWindow');
+    if (requestFinish && requestFinish != undefined && requestFinish != null && requestForm && requestForm != undefined && requestForm != null && ErrorWindow && ErrorWindow != undefined && ErrorWindow != null) {
+        document.getElementById('ErrorText').innerHTML = data;
+        requestFinish.classList.add("invisible");
+        requestForm.classList.add("invisible");
+        ErrorWindow.classList.remove("invisible");
+        setTimeout(function () {
+            ErrorWindow.classList.add("invisible");
+            requestForm.classList.remove("invisible");
+        }, 1800);
+    }
+});
 connection.on("filldata", function (data) {
     const id = document.getElementById('id')
     if (id && id != undefined && id != null) {
