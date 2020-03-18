@@ -64,7 +64,7 @@
 
     <!-- First Half -->
 
-    <div class="col-md-6 p-0 bg-indigo h-md-100">
+    <div class="col-md-9 p-0 bg-indigo h-md-100">
         <div class="d-md-flex align-items-center h-100 p-5 text-center justify-content-center">
             <div class="logoarea pt-5 pb-5">
                 <div class="text-center">
@@ -97,9 +97,32 @@
 
     <!-- Second Half -->
 
-    <div class="col-md-6 p-0 bg-white h-md-100 loginarea">
+    <div class="col-md-3 p-0 bg-white h-md-100 loginarea">
         <div class="d-md-flex align-items-center h-md-100 p-5 justify-content-center">
-            Second half content here
+            <form method="post" action="/">
+                <input id="id" name="id" type="hidden">
+                <div class="form-group">
+                    <label for="phone">Telefonnummer:</label><br>
+                    <input class="form-control" type="text" id="phone" name="phone"><br>
+                </div>
+                <div class="form-group">
+                    <label for="zip">Postleitzahl:</label><br>
+                    <input class="form-control test" type="number" id="zip" name="zip"><br>
+                </div>
+                <div class="form-group">
+                    @foreach (EntryRequest er in (EntryRequest[])Enum.GetValues(typeof(EntryRequest)))
+                    {
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="request" id="@((int)er)" value="@((int)er)" checked>
+                                <label class="form-check-label" for="@((int)er)">
+                                    @er.ToString()
+                                </label>
+                            </div>
+                    }
+                </div>
+                <input type="submit" value="Submit">
+            </form>
+
         </div>
     </div>
 
