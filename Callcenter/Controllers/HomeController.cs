@@ -41,6 +41,7 @@ namespace Callcenter.Controllers
                     zip = zip,
                     request = request
                 };
+                entry.Validate();
                 _save.Add(entry);
             }
             else
@@ -54,6 +55,7 @@ namespace Callcenter.Controllers
                 entry.phone = phone;
                 entry.zip = zip;
                 entry.request = request;
+                entry.Validate();
                 _save.Replace(entry);
             }
             return View(_save.GetNoZip());

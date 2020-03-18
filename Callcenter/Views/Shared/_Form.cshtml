@@ -11,25 +11,28 @@
     <div class="form-group">
         @foreach (EntryRequest er in (EntryRequest[])Enum.GetValues(typeof(EntryRequest)))
         {
-            if (Model.request == er)
+            @if ((int)er >= 0)
             {
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="request" id="@((int)er)" value="@((int)er)" checked>
-                    <label class="form-check-label" for="@((int)er)">
-                        @er.ToString()
-                    </label>
-                </div>
-            }
-            else
-            {
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="request" id="@((int)er)" value="@((int)er)" checked>
-                    <label class="form-check-label" for="@((int)er)">
-                        @er.ToString()
-                    </label>
-                </div>
+                if (Model.request == er)
+                {
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="request" id="@((int)er)" value="@((int)er)" checked>
+                        <label class="form-check-label" for="@((int)er)">
+                            @er.ToString()
+                        </label>
+                    </div>
+                }
+                else
+                {
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="request" id="@((int)er)" value="@((int)er)" checked>
+                        <label class="form-check-label" for="@((int)er)">
+                            @er.ToString()
+                        </label>
+                    </div>
+                }
             }
         }
-    </div>
+        </div>
     <input type="submit" value="Submit">
 </form>

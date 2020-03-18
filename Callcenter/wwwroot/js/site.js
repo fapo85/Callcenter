@@ -26,6 +26,38 @@ connection.on("delete", function (id) {
         element.parentElement.removeChild(element);
     }
 });
+connection.on("SaveOK", function (data) {
+    const requestFinish = document.getElementById('requestFinish');
+    const requestForm = document.getElementById('requestForm');
+    if (requestFinish && requestFinish != undefined && requestFinish != null && requestForm && requestForm != undefined && requestForm != null) {
+        document.getElementById('rftel').innerHTML = data.phone;
+        document.getElementById('rfzip').innerHTML = data.zip;
+        document.getElementById('rfreq').innerHTML = data.request;
+        requestForm.classList.add("invisible");
+        requestFinish.classList.remove("invisible");
+        setTimeout(function () {
+            requestFinish.classList.add("invisible");
+            requestForm.classList.remove("invisible");
+        }, 800);
+    }
+});
+connection.on("Error", function (data) {
+    console.error("Fehler:");
+    console.error(data);
+    const requestFinish = document.getElementById('requestFinish');
+    const requestForm = document.getElementById('requestForm');
+    const ErrorWindow = document.getElementById('ErrorWindow');
+    if (requestFinish && requestFinish != undefined && requestFinish != null && requestForm && requestForm != undefined && requestForm != null && ErrorWindow && ErrorWindow != undefined && ErrorWindow != null) {
+        document.getElementById('ErrorText').innerHTML = data;
+        requestFinish.classList.add("invisible");
+        requestForm.classList.add("invisible");
+        ErrorWindow.classList.remove("invisible");
+        setTimeout(function () {
+            ErrorWindow.classList.add("invisible");
+            requestForm.classList.remove("invisible");
+        }, 1800);
+    }
+});
 connection.on("filldata", function (data) {
     const id = document.getElementById('id')
     if (id && id != undefined && id != null) {
@@ -54,6 +86,9 @@ connection.on("insert", function (entry) {
     object.timestamp = new Date(object.timestamp);
 
     switch (object.request) {
+        case -1:
+            object.request = "Fehler";
+            break;
         case 1:
             object.request = "Einkäufe";
             break;
@@ -169,16 +204,16 @@ function AddItem() {
         document.getElementById('zip').value,
         request
     );
-    document.getElementById('rftel').value = document.getElementById('phone').value;
-    document.getElementById('rfzip').value = document.getElementById('zip').value;
-    document.getElementById('rfreq').value = request;
-    const requestFinish = document.getElementById('requestFinish');
-    const requestForm = document.getElementById('requestForm');
-    requestForm.classList.add("invisible");
-    requestFinish.classList.remove("invisible");
-    setTimeout(function () {
-        requestFinish.classList.add("invisible");
-        requestForm.classList.remove("invisible");
-    }, 800);
+    //document.getElementById('rftel').value = document.getElementById('phone').value;
+    //document.getElementById('rfzip').value = document.getElementById('zip').value;
+    //document.getElementById('rfreq').value = request;
+    //const requestFinish = document.getElementById('requestFinish');
+    //const requestForm = document.getElementById('requestForm');
+    //requestForm.classList.add("invisible");
+    //requestFinish.classList.remove("invisible");
+    //setTimeout(function () {
+    //    requestFinish.classList.add("invisible");
+    //    requestForm.classList.remove("invisible");
+    //}, 800);
     return false;
 }
