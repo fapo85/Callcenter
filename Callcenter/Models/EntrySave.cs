@@ -53,7 +53,6 @@ namespace Callcenter.Models
                     if (initialString.Contains("00000"))
                     {
                         var json = initialString.Replace("ObjectId(", "").Replace("ISODate(", "").Replace("\")", "\"");
-                        Console.WriteLine(json);
                         _hubContext.Clients.All.SendAsync("insert", json);
                     }
                 });

@@ -27,8 +27,8 @@
                                 <td>@item.timestamp.ToLocalTime().ToString("d.M.yyyy HH:mm:ss")</td>
                                 <td>@item.phone</td>
                                 <td>@item.request</td>
-                                <td><button class="btn btn-secondary block" onclick="MarkItem('@item.id')"><i class="fas fa-user-edit" title="In Bearbeitung nehmen"></i></button></td>
-                                <td><button class="btn btn-secondary block" onclick="DelItem('@item.id')"><i class="fas fa-thumbs-up" title="Fertigstellen"></i></button></td>
+                                <td><button class="btn btn-secondary btn-sm btn-block" onclick="MarkItem('@item.id')"><i class="fas fa-user-edit" title="In Bearbeitung nehmen"></i></button></td>
+                                <td><button class="btn btn-secondary btn-sm btn-block" onclick="DelItem('@item.id')"><i class="fas fa-thumbs-up" title="Fertigstellen"></i></button></td>
                             </tr>
                         }
                     </table>

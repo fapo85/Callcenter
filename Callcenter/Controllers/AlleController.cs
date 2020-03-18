@@ -11,9 +11,9 @@ namespace Callcenter.Controllers
 {
     public class AlleController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<AlleController> _logger;
         private readonly EntrySave _save;
-        public AlleController(ILogger<HomeController> logger, EntrySave save)
+        public AlleController(ILogger<AlleController> logger, EntrySave save)
         {
             _logger = logger;
             _save = save;

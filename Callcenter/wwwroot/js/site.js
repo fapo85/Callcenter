@@ -3,39 +3,33 @@
 
 // Write your JavaScript code.
 "use strict";
-var connection = new signalR.HubConnectionBuilder().withUrl("/Hub").build();
+const connection = new signalR.HubConnectionBuilder().withUrl("/Hub").withAutomaticReconnect().build();
 connection.start().then(function () {
-    console.log("SignalR Connected");
 }).catch(function (err) {
     return console.error(err.toString());
 });
 connection.on("marked", function (id) {
-    console.log("SignalR - Marked: " + id);
     var element = document.getElementById(id);
     if (element && element != undefined && element != null && !element.classList.contains("marked")) {
         element.classList.add("other");
     }
 });
 connection.on("free", function (id) {
-    console.log("SignalR - Free: " + id);
     var element = document.getElementById(id);
     if (element && element != undefined && element != null) {
         element.classList.remove("other");
     }
 });
 connection.on("delete", function (id) {
-    console.log("SignalR - Delete: " + id);
     var element = document.getElementById(id);
     if (element && element != undefined && element != null) {
         element.parentElement.removeChild(element);
     }
 });
 connection.on("filldata", function (data) {
-    console.log("SignalR - filldata: " + data.id);
     const id = document.getElementById('id')
     if (id && id != undefined && id != null) {
         id.value = data.id;
-        console.log(data.id);
     }
     const phone = document.getElementById('phone')
     if (phone && phone != undefined && phone != null) {
@@ -54,29 +48,29 @@ connection.on("filldata", function (data) {
 });
 connection.on("insert", function (entry) {
     const object = JSON.parse(entry);
-    if(document.getElementById(object._id) !== null){
+    if (document.getElementById(object._id) !== null) {
         return;
     }
     object.timestamp = new Date(object.timestamp);
 
     switch (object.request) {
         case 1:
-            object.request = "Einkäufen";
+            object.request = "Einkäufe";
             break;
         case 2:
-            object.request = "Haustieren";
+            object.request = "Haustiere";
             break;
         case 3:
             object.request = "Reparaturen";
             break;
-        default :
+        default:
             object.request = "Sonstiges";
             break;
     }
     object.cstring = object.marked ? "other" : "";
-    
+
     $("#entries").find('tbody')
-        .append($('<tr  id="' + object._id + '" class="'+ object.cstring + '">')
+        .append($('<tr  id="' + object._id + '" class="' + object.cstring + '">')
             .append($('<td>')
                 .append(object.timestamp.toLocaleString("de"))
             )
@@ -87,12 +81,12 @@ connection.on("insert", function (entry) {
                 .append(object.request)
             )
             .append($('<td>')
-                .append($('<button class="btn btn-secondary block" onclick="MarkItem(\''+object._id + '\')">')                
-                        .append('<i class="fas fa-user-edit" title="In Bearbeitung nehmen">')
+                .append($('<button class="btn btn-secondary btn-sm btn-block" onclick="MarkItem(\'' + object._id + '\')">')
+                    .append('<i class="fas fa-user-edit" title="In Bearbeitung nehmen">')
                 )
             )
             .append($('<td>')
-                .append($('<button class="btn btn-secondary block" onclick="DelItem(\''+object._id + '\')">')
+                .append($('<button class="btn btn-secondary btn-sm btn-block" onclick="DelItem(\'' + object._id + '\')">')
                     .append('<i class="fas fa-thumbs-up" title="Fertigstellen">')
                 )
             )
@@ -112,37 +106,24 @@ function MarkItem(elmid) {
     }
     if (!element.classList.contains("marked")) {
         Array.from(document.getElementsByClassName("marked")).forEach(elm => {
-            7
             connection.invoke("FreeEntry", elm.id);
-            elm.childNodes.forEach(item => {
-                item.childNodes.forEach(itm => {
-                    if (itm.classList != undefined && itm.classList.contains("fa-times")) {
-                        itm.classList.add("fa-user-edit");
-                        itm.classList.remove("fa-times");
-                    }
-                });
+            Array.from(elm.getElementsByClassName("fa-times")).forEach(itm => {
+                itm.classList.add("fa-user-edit");
+                itm.classList.remove("fa-times");
             });
             elm.classList.remove("marked");
         });
         element.classList.add("marked");
-        element.childNodes.forEach(item => {
-            item.childNodes.forEach(itm => {
-                if (itm.classList != undefined && itm.classList.contains("fa-user-edit")) {
-                    itm.classList.add("fa-times");
-                    itm.classList.remove("fa-user-edit");
-                }
-            });
+        Array.from(element.getElementsByClassName("fa-user-edit")).forEach(itm => {
+            itm.classList.add("fa-times");
+            itm.classList.remove("fa-user-edit");
         });
         connection.invoke("MarkEntry", elmid);
     } else {
         element.classList.remove("marked");
-        element.childNodes.forEach(item => {
-            item.childNodes.forEach(itm => {
-                if (itm.classList != undefined && itm.classList.contains("fa-times")) {
-                    itm.classList.add("fa-user-edit");
-                    itm.classList.remove("fa-times");
-                }
-            });
+        Array.from(element.getElementsByClassName("fa-times")).forEach(itm => {
+            itm.classList.add("fa-user-edit");
+            itm.classList.remove("fa-times");
         });
         connection.invoke("FreeEntry", elmid);
         document.getElementById('id').value = "";
@@ -160,7 +141,6 @@ function MarkItem(elmid) {
 function DelItem(elmid) {
     var element = document.getElementById(elmid);
     if (element.classList.contains("marked")) {
-        //window.location.href = "/Entry/Delete/" + elmid;
         connection.invoke("DeleteEntry", elmid);
         document.getElementById('id').value = "";
         document.getElementById('phone').value = "";
@@ -183,7 +163,6 @@ function AddItem() {
             request = radios[i].value;
         }
     }
-    console.log(document.getElementById('id').value);
     connection.invoke("AddOrModifyEntry",
         document.getElementById('id').value,
         document.getElementById('phone').value,

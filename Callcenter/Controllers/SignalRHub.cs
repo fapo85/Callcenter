@@ -17,7 +17,6 @@ namespace Callcenter.Controllers
         }
         public Task FreeEntry(string id)
         {
-            Console.WriteLine($"Element {id} Free");
             Entry entry = _save.Find(new ObjectId(id));
             if (entry != null)
             {
@@ -28,7 +27,6 @@ namespace Callcenter.Controllers
         }
         public Task MarkEntry(string id)
         {
-            Console.WriteLine($"Element {id} Marked");
             Entry entry = _save.Find(new ObjectId(id));
             if (entry != null)
             {
@@ -79,7 +77,6 @@ namespace Callcenter.Controllers
 
         public Task DeleteEntry(string id)
         {
-            Console.WriteLine($"Element {id} Delete");
             Entry entry = _save.Find(new ObjectId(id));
             if (entry == null)
             {

@@ -2,8 +2,8 @@
 {
     public enum EntryRequest
     {
-        Einkäufen = 1,
-        Haustieren = 2,
+        Einkäufe = 1,
+        Haustiere = 2,
         Reparaturen = 3,
         Sonstiges = 4
     }
