@@ -51,6 +51,7 @@ namespace Callcenter.Controllers
                     zip = zip,
                     request = request
                 };
+                entry.Validate();
                 _save.Add(entry);
             }
             else

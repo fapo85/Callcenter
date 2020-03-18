@@ -27,5 +27,46 @@ namespace Callcenter.Models
         {
             return DateTime.Compare(x.timestamp, y.timestamp);
         }
+        public void Validate()
+        {
+            ValidateTel(phone);
+            ValidateZip(zip);
+        }
+        public static void ValidateTel(string phoneNumber)
+        {
+            string firstFour = phoneNumber.Substring(0, 4);
+
+            if (firstFour == "00" && firstFour != "0049")
+            {
+                throw new Exception("Not a german number!");
+            }
+            else if (firstFour == "0049")
+            {
+                firstFour = "0" + phoneNumber.Substring(4, 7);
+            }
+
+            switch (firstFour)
+            {
+                case "0137":
+                case "0700":
+                case "0900":
+                case "0180":
+                case "0190":
+                case "1180":
+                    throw new Exception("Number not allowed!");
+            }
+        }
+        public static void ValidateZip(string zip)
+        {
+            zip = zip.Trim();
+            if (zip.Length != 5){
+                throw new Exception("Zip ist nicht länge 5");
+            }
+            foreach(char c in zip.ToCharArray()){
+                if (!char.IsDigit(c)){
+                    throw new Exception("Zip besteht nicht nur aus Buchstaben.");
+                }
+            }
+        }
     }
 }

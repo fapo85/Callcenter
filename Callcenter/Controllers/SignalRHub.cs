@@ -69,6 +69,7 @@ namespace Callcenter.Controllers
             entry.phone = phone;
             entry.zip = zip;
             entry.request = ParseRequest(request);
+            entry.Validate();
             Task t = new Task(()=>_save.Add(entry));
             t.Start();
             return t;
