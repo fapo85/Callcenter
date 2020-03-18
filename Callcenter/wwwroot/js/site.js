@@ -52,6 +52,50 @@ connection.on("filldata", function (data) {
         }
     }
 });
+connection.on("test", function (entry) {
+    const object = JSON.parse(entry);
+    object.timestamp = new Date(object.timestamp);
+
+    switch (object.request) {
+        case 1:
+            object.request = "Einkäufen";
+            break;
+        case 2:
+            object.request = "Haustieren";
+            break;
+        case 3:
+            object.request = "Reparaturen";
+            break;
+        default :
+            object.request = "Sonstiges";
+            break;
+    }
+    object.cstring = object.marked ? "other" : "";
+    
+    $("#entries").find('tbody')
+        .append($('<tr  id="' + object._id + '" class="'+ object.cstring + '">')
+            .append($('<td>')
+                .append(object.timestamp.toLocaleString("de"))
+            )
+            .append($('<td>')
+                .append(object.phone)
+            )
+            .append($('<td>')
+                .append(object.request)
+            )
+            .append($('<td>')
+                .append($('<button class="btn btn-secondary block" onclick="MarkItem(\''+object._id + '\')">')                
+                        .append('<i class="fas fa-user-edit" title="In Bearbeitung nehmen">')
+                )
+            )
+            .append($('<td>')
+                .append($('<button class="btn btn-secondary block" onclick="DelItem(\''+object._id + '\')">')
+                    .append('<i class="fas fa-thumbs-up" title="Fertigstellen">')
+                )
+            )
+        );
+});
+
 function MarkItem(elmid) {
     const element = document.getElementById(elmid);
     if (element.classList.contains("other")) {
@@ -65,7 +109,7 @@ function MarkItem(elmid) {
     }
     if (!element.classList.contains("marked")) {
         Array.from(document.getElementsByClassName("marked")).forEach(elm => {
-7
+            7
             connection.invoke("FreeEntry", elm.id);
             elm.childNodes.forEach(item => {
                 item.childNodes.forEach(itm => {
@@ -109,6 +153,7 @@ function MarkItem(elmid) {
         }
     }
 }
+
 function DelItem(elmid) {
     var element = document.getElementById(elmid);
     if (element.classList.contains("marked")) {
