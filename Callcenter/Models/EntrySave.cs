@@ -28,8 +28,8 @@ namespace Callcenter.Models
             collection = database.GetCollection<Entry>("requests");
         }
 
-        public List<Entry> GetAll() => collection.Find(e => true).ToList();
-        public List<Entry> GetNoZip() => collection.Find(e => e.zip == "00000").ToList();
+        public List<Entry> GetAll() => collection.Find(e => true)/*.SortBy(e => e.timestamp)*/.ToList();
+        public List<Entry> GetNoZip() => collection.Find(e => e.zip == "00000")/*.SortBy(e => e.timestamp)*/.ToList();
 
         internal void Remove(ObjectId id) => collection.DeleteOne(e => e.id == id);
 

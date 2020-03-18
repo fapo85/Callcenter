@@ -56,19 +56,19 @@ namespace Callcenter.Controllers
         //    return Ok();
         //}
 
-        [HttpGet("/Entry/Delete/{id}")]
-        public IActionResult Delete(string id)
-        {
-            Console.WriteLine($"Element {id} Delete");
-            Entry entry = _save.Find(new ObjectId(id));
-            //Wird nicht gelöscht
-            //if (entry != null)
-            //{
-            //    _save.Remove(new ObjectId(id));
-            //}
-            _hubContext.Clients.All.SendAsync("delete", id).Wait();
-            return View("Index", entry);
-        }
+        //[HttpGet("/Entry/Delete/{id}")]
+        //public IActionResult Delete(string id)
+        //{
+        //    Console.WriteLine($"Element {id} Delete");
+        //    Entry entry = _save.Find(new ObjectId(id));
+        //    //Wird nicht gelöscht
+        //    //if (entry != null)
+        //    //{
+        //    //    _save.Remove(new ObjectId(id));
+        //    //}
+        //    _hubContext.Clients.All.SendAsync("delete", id).Wait();
+        //    return View("Index", entry);
+        //}
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

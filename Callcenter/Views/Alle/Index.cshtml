@@ -10,6 +10,7 @@
         <table style="width:100%">
             <tr>
                 <th>Zeitpunkt</th>
+                <th>Letzte Änderung</th>
                 <th>Telefonnummer</th>
                 <th>Postleitzahl</th>
                 <th>Anfrage</th>
@@ -18,6 +19,7 @@
             {
         <tr>
             <td>@item.timestamp.ToLocalTime()</td>
+            <td>@item.modifyts?.ToLocalTime()</td>
             <td>@item.phone</td>
             <td>@item.zip</td>
             <td>@item.request.ToString()</td>

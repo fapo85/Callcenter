@@ -111,7 +111,17 @@ function MarkItem(elmid) {
 function DelItem(elmid) {
     var element = document.getElementById(elmid);
     if (element.classList.contains("marked")) {
-        window.location.href = "/Entry/Delete/" + elmid;
+        //window.location.href = "/Entry/Delete/" + elmid;
+        connection.invoke("DeleteEntry", elmid);
+        document.getElementById('id').value = "";
+        document.getElementById('phone').value = "";
+        document.getElementById('zip').value = "";
+        const radios = document.getElementsByName("request");
+        for (var i = 0; i < radios.length; i++) {
+            if (radios[i].checked) {
+                radios[i].checked = false;
+            }
+        }
     } else {
         alert("Element " + elmid + " nicht als bearbeitet Markiert");
     }

@@ -13,6 +13,7 @@ namespace Callcenter.Models
         [BsonId]
         public ObjectId id { get; set; }
         public DateTime timestamp { get; set; }
+        public DateTime? modifyts { get; set; }
         public string phone { get; set; }
         public string zip { get; set; }
         public EntryRequest request { get; set; }
