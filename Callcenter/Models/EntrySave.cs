@@ -20,6 +20,7 @@ namespace Callcenter.Models
         //private readonly MongoClient client;
         //private readonly IMongoDatabase database;
         private IMongoCollection<Entry> collection;
+
         public EntrySave(IOptions<MongoDbConf> options, IHubContext<SignalRHub> hubContext)
         {
             var mongoDbConf = options.Value;
@@ -37,41 +38,34 @@ namespace Callcenter.Models
         }
 
 
-
-        public async void Listen()
+        private async void Listen()
         {
-            try
-            {
-                var options = new ChangeStreamOptions { FullDocument = ChangeStreamFullDocumentOption.UpdateLookup };
-                var pipeline = new EmptyPipelineDefinition<ChangeStreamDocument<Entry>>()
-                    .Match("{ operationType: { $in: [ 'insert','replace', 'update'  ] }}")
-                    .Project("{ fullDocument: 1 }");
+            var options = new ChangeStreamOptions { FullDocument = ChangeStreamFullDocumentOption.UpdateLookup };
+            var pipeline = new EmptyPipelineDefinition<ChangeStreamDocument<Entry>>()
+                .Match("{ operationType: { $in: [ 'insert','replace', 'update'  ] }}")
+                .Project("{ fullDocument: 1 }");
 
-                using var cursor = collection.Watch(pipeline, options);
-                await cursor.ForEachAsync(change =>
-                {
-                    var initialString = change.Elements.ToList()[1].Value.ToString();
-                    if (initialString.Contains("00000"))
-                    {
-                        var json = initialString.Replace("ObjectId(", "").Replace("ISODate(", "").Replace("\")", "\"");
-                        _hubContext.Clients.All.SendAsync("insert", json);
-                    }
-                });
-            }
-            catch (Exception e)
+            using var cursor = collection.Watch(pipeline, options);
+            await cursor.ForEachAsync(change =>
             {
-                Console.WriteLine("Setup failed: \n" + e);
-            }
+                var initialString = change.Elements.ToList()[1].Value.ToString();
+                if (initialString.Contains("00000"))
+                {
+                    var json = initialString.Replace("ObjectId(", "").Replace("ISODate(", "").Replace("\")", "\"");
+                    _hubContext.Clients.All.SendAsync("insert", json);
+                }
+            });
         }
 
         //public List<Entry> GetAll() => collection.Find(e => true).SortBy(e => e.timestamp).ToList();
-        public List<Entry> GetAll()        {
+        public List<Entry> GetAll()
+        {
             var list = collection.Find(e => true).ToList();
             list.Sort(Entry.Compare);
             return list;
         }
-        public long CountAll() => collection.Find(e => true).CountDocuments();
 
+        public long CountAll() => collection.Find(e => true).CountDocuments();
 
 
         //public List<Entry> GetNoZip() => collection.Find(e => e.zip == "00000").SortBy(e => e.timestamp).ToList();
@@ -82,6 +76,7 @@ namespace Callcenter.Models
             list.Sort(Entry.Compare);
             return list;
         }
+
         public long CountNoZip() => collection.Find(e => e.zip == "00000").CountDocuments();
 
         internal long CountCallHour() => collection.Find(e => e.timestamp > DateTime.Now.Subtract(TimeSpan.FromMinutes(60))).CountDocuments();
