@@ -52,8 +52,11 @@ connection.on("filldata", function (data) {
         }
     }
 });
-connection.on("test", function (entry) {
+connection.on("insert", function (entry) {
     const object = JSON.parse(entry);
+    if(document.getElementById(object._id) !== null){
+        return;
+    }
     object.timestamp = new Date(object.timestamp);
 
     switch (object.request) {

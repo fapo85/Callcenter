@@ -41,7 +41,6 @@ namespace Callcenter.Models
         {
             try
             {
-                //Get the whole document instead of just the changed portion
                 var options = new ChangeStreamOptions { FullDocument = ChangeStreamFullDocumentOption.UpdateLookup };
                 var pipeline = new EmptyPipelineDefinition<ChangeStreamDocument<Entry>>()
                     .Match("{ operationType: { $in: [ 'insert','replace', 'update'  ] }}")
@@ -50,9 +49,13 @@ namespace Callcenter.Models
                 using var cursor = collection.Watch(pipeline, options);
                 await cursor.ForEachAsync(change =>
                 {
-                    var s = change.Elements.ToList()[1].Value.ToString().Replace("ObjectId(", "").Replace("ISODate(", "").Replace("\")", "\"");
-                    Console.WriteLine(s);
-                    _hubContext.Clients.All.SendAsync("test", s);
+                    var initialString = change.Elements.ToList()[1].Value.ToString();
+                    if (initialString.Contains("00000"))
+                    {
+                        var json = initialString.Replace("ObjectId(", "").Replace("ISODate(", "").Replace("\")", "\"");
+                        Console.WriteLine(json);
+                        _hubContext.Clients.All.SendAsync("insert", json);
+                    }
                 });
             }
             catch (Exception e)
