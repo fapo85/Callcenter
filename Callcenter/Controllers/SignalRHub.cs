@@ -36,17 +36,23 @@ namespace Callcenter.Controllers
                 _save.Replace(entry);
             }
             new Task(()=>Clients.All.SendAsync("marked", id)).Start();
-            return Clients.Caller.SendAsync("filldata", entry);
-        }
-        //public Task AddEntry(string id, string phone, string zip, EntryRequest request)
-        public Task AddEntry(ToAddRequest request)
-        {
-            if (String.IsNullOrWhiteSpace(request.zip))
+            return Clients.Caller.SendAsync("filldata", new EntryFill()
             {
-                request.zip = "00000";
+                id = entry.id.ToString(),
+                phone = entry.phone,
+                zip = entry.zip,
+                request = (int)entry.request
+            });
+        }
+
+        public Task AddOrModifyEntry(string id, string phone, string zip, string request)
+        {
+            if (String.IsNullOrWhiteSpace(zip))
+            {
+                zip = "00000";
             }
             Entry entry;
-            if (String.IsNullOrWhiteSpace(request.id) || request.id.Equals("000000000000000000000000"))
+            if (String.IsNullOrWhiteSpace(id) || id.Equals("000000000000000000000000"))
             {
                 entry = new Entry()
                 {
@@ -55,20 +61,22 @@ namespace Callcenter.Controllers
             }
             else
             {
-                var oldvalue = _save.Find(new ObjectId(request.id));
+                var oldvalue = _save.Find(new ObjectId(id));
                 entry = new Entry()
                 {
                     timestamp = oldvalue.timestamp,
                 };
             }
             entry.modifyts = DateTime.Now;
-            entry.phone = request.phone;
-            entry.zip = request.zip;
-            entry.request = request.request;
+            entry.phone = phone;
+            entry.zip = zip;
+            entry.request = ParseRequest(request);
             Task t = new Task(()=>_save.Add(entry));
             t.Start();
             return t;
         }
+
+
         public Task DeleteEntry(string id)
         {
             Console.WriteLine($"Element {id} Delete");
@@ -79,6 +87,20 @@ namespace Callcenter.Controllers
             }
             _save.Remove(new ObjectId(id));
             return Clients.All.SendAsync("delete", id);
+        }
+
+        private EntryRequest ParseRequest(string request)
+        {
+            if(int.TryParse(request, out int v))
+            {
+                return (EntryRequest)v;
+            }
+            foreach(EntryRequest er in (EntryRequest[])Enum.GetValues(typeof(EntryRequest)))
+            {
+                if (request.ToLower().Equals(er.ToString().Trim().ToLower()))
+                    return er;
+            }
+            throw new FormatException($"kann \"{request}\" nicht nach EntryRequest umwandeln");
         }
     }
 }

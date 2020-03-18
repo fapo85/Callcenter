@@ -35,6 +35,7 @@ connection.on("filldata", function (data) {
     const id = document.getElementById('id')
     if (id && id != undefined && id != null) {
         id.value = data.id;
+        console.log(data.id);
     }
     const phone = document.getElementById('phone')
     if (phone && phone != undefined && phone != null) {
@@ -134,7 +135,8 @@ function AddItem() {
             request = radios[i].value;
         }
     }
-    connection.invoke("AddEntry",
+    console.log(document.getElementById('id').value);
+    connection.invoke("AddOrModifyEntry",
         document.getElementById('id').value,
         document.getElementById('phone').value,
         document.getElementById('zip').value,
