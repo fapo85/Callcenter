@@ -27,38 +27,44 @@ namespace Callcenter.Controllers
         [HttpPost]
         public IActionResult Index(string id, string phone, EntryRequest request, string zip)
         {
-            if (String.IsNullOrWhiteSpace(zip))
+            try
             {
-                zip = "00000";
-            }
-            Entry entry;
-            if (String.IsNullOrWhiteSpace(id) || id.Equals("000000000000000000000000"))
-            {
-                entry = new Entry()
+                if (String.IsNullOrWhiteSpace(zip))
                 {
-                    timestamp = DateTime.Now,
-                    phone = phone,
-                    zip = zip,
-                    request = request
-                };
-                entry.Validate();
-                _save.Add(entry);
-            }
-            else
-            {
-                entry = _save.Find(new ObjectId(id));
-                if (entry == null)
-                {
-                    entry = new Entry();
-                    entry.id = new ObjectId(id);
+                    zip = "00000";
                 }
-                entry.phone = phone;
-                entry.zip = zip;
-                entry.request = request;
-                entry.Validate();
-                _save.Replace(entry);
+                Entry entry;
+                if (String.IsNullOrWhiteSpace(id) || id.Equals("000000000000000000000000"))
+                {
+                    entry = new Entry()
+                    {
+                        timestamp = DateTime.Now,
+                        phone = phone,
+                        zip = zip,
+                        request = request
+                    };
+                    entry.Validate();
+                    _save.Add(entry);
+                }
+                else
+                {
+                    entry = _save.Find(new ObjectId(id));
+                    if (entry == null)
+                    {
+                        entry = new Entry();
+                        entry.id = new ObjectId(id);
+                    }
+                    entry.phone = phone;
+                    entry.zip = zip;
+                    entry.request = request;
+                    entry.Validate();
+                    _save.Replace(entry);
+                }
+                return View(_save.GetNoZip());
+            }catch(Exception e)
+            {
+                return BadRequest(e.Message);
             }
-            return View(_save.GetNoZip());
         }
 
         public IActionResult Privacy()

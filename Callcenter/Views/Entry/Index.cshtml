@@ -3,9 +3,91 @@
     ViewData["Title"] = "Neuer Eintrag";
 
 }
+    <script type="text/javascript">
+    function ShowErrorMsgFrame(msg) {
+        console.error("Fehler: " + msg);
+        const ErrorWindow = document.getElementById('ErrorWindow');
+        if (ErrorWindow && ErrorWindow != undefined && ErrorWindow != null) {
+            document.getElementById('ErrorText').innerHTML = msg;
+            ErrorWindow.classList.remove("invisible");
+            setTimeout(function () {
+                ErrorWindow.classList.add("invisible");
+            }, 2000);
+        }
+    }
+    function validateFrame() {
+        if (!validatePhone()) {
+            ShowErrorMsgFrame("Telefonnummer ist nicht korrekt");
+            return false;
+        }
+        if (!validateZip()) {
+            ShowErrorMsgFrame("Postleitzahl ist nicht korrekt");
+            return false;
+        }
+        if (!validateAuswahl()) {
+            ShowErrorMsgFrame("Auswahl ist nicht korrekt");
+            return false;
+        }
+        return true;
+    }
+    function valiPhone() {
+        if (validatePhone()) {
+            ErrorWindow.classList.add("invisible");
+        }
+    }
+    function valiZip() {
+        if (validateZip()) {
+            ErrorWindow.classList.add("invisible");
+        }
+    }
+    </script>
 <div class="text-center">
     <h1 class="display-4">@ViewData["Title"]</h1>
 </div>
 <div id="addspace">
-    <partial name="_Form" />
+    <form method="post" action="/" onsubmit="return validateFrame();">
+        <input id="id" name="id" type="hidden" value="@Model.id">
+        <div class="form-group">
+            <label for="phone">Telefonnummer:</label><br>
+            <input class="form-control input-lg" type="text" id="phone" name="phone" onchange="valiPhone();" value="@Model.phone" required><br>
+        </div>
+        <div class="form-group">
+            <label for="zip">Postleitzahl:</label><br>
+            <input class="form-control input-lg test" type="text" id="zip" name="zip" onchange="valiZip();" value="@Model.zip" required><br>
+        </div>
+        <div class="form-group">
+            @foreach (EntryRequest er in (EntryRequest[])Enum.GetValues(typeof(EntryRequest)))
+            {
+                @if ((int)er >= 0)
+                {
+                    if (Model.request == er)
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="request" id="@((int)er)" value="@((int)er)" checked>
+                            <label class="form-check-label" for="@((int)er)">
+                                @er.ToString()
+                            </label>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="request" id="@((int)er)" value="@((int)er)">
+                            <label class="form-check-label" for="@((int)er)">
+                                @er.ToString()
+                            </label>
+                        </div>
+                    }
+                }
+            }
+        </div>
+        <input type="submit" value="Submit">
+    </form>
+    <br />
+    <div id="ErrorWindow" class="popup invisible alert-danger" role="alert">
+        <p>
+            <b>Ein Fehler ist aufgetreten.</b>
+        </p>
+        <p id="ErrorText"></p>
+    </div>
 </div>
