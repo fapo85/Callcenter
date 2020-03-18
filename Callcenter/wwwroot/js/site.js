@@ -54,6 +54,9 @@ connection.on("insert", function (entry) {
     object.timestamp = new Date(object.timestamp);
 
     switch (object.request) {
+        case -1:
+            object.request = "Fehler";
+            break;
         case 1:
             object.request = "Einkäufe";
             break;
