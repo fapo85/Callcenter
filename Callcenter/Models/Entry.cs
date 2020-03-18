@@ -29,11 +29,19 @@ namespace Callcenter.Models
         }
         public void Validate()
         {
+            phone = phone.Trim();
+            if (phone.StartsWith('+')){
+                phone = phone.Substring(0, 1);
+                phone = "00" + phone;
+            }
             ValidateTel(phone);
+            zip = zip.Trim();
             ValidateZip(zip);
         }
         public static void ValidateTel(string phoneNumber)
         {
+            if (phoneNumber.Length < 8)
+                throw new Exception("Nummer zu klein");
             string firstFour = phoneNumber.Substring(0, 4);
 
             if (firstFour == "00" && firstFour != "0049")
@@ -55,10 +63,16 @@ namespace Callcenter.Models
                 case "1180":
                     throw new Exception("Number not allowed!");
             }
+            foreach (char c in phoneNumber.ToCharArray())
+            {
+                if (!char.IsDigit(c))
+                {
+                    throw new Exception("Phone besteht nicht nur aus Buchstaben.");
+                }
+            }
         }
         public static void ValidateZip(string zip)
         {
-            zip = zip.Trim();
             if (zip.Length != 5){
                 throw new Exception("Zip ist nicht länge 5");
             }

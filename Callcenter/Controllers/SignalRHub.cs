@@ -70,9 +70,14 @@ namespace Callcenter.Controllers
             entry.zip = zip;
             entry.request = ParseRequest(request);
             entry.Validate();
-            Task t = new Task(()=>_save.Add(entry));
-            t.Start();
-            return t;
+            _save.Add(entry);
+            return Clients.Caller.SendAsync("SaveOK", new EntryFill()
+            {
+                id = entry.id.ToString(),
+                phone = entry.phone,
+                zip = entry.zip,
+                request = (int)entry.request
+            });
         }
 
 

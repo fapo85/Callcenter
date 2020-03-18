@@ -26,6 +26,21 @@ connection.on("delete", function (id) {
         element.parentElement.removeChild(element);
     }
 });
+connection.on("SaveOK", function (data) {
+    const requestFinish = document.getElementById('requestFinish');
+    const requestForm = document.getElementById('requestForm');
+    if (requestFinish && requestFinish != undefined && requestFinish != null && requestForm && requestForm != undefined && requestForm != null) {
+        document.getElementById('rftel').innerHTML = data.phone;
+        document.getElementById('rfzip').innerHTML = data.zip;
+        document.getElementById('rfreq').innerHTML = data.request;
+        requestForm.classList.add("invisible");
+        requestFinish.classList.remove("invisible");
+        setTimeout(function () {
+            requestFinish.classList.add("invisible");
+            requestForm.classList.remove("invisible");
+        }, 800);
+    }
+});
 connection.on("filldata", function (data) {
     const id = document.getElementById('id')
     if (id && id != undefined && id != null) {
@@ -172,16 +187,16 @@ function AddItem() {
         document.getElementById('zip').value,
         request
     );
-    document.getElementById('rftel').value = document.getElementById('phone').value;
-    document.getElementById('rfzip').value = document.getElementById('zip').value;
-    document.getElementById('rfreq').value = request;
-    const requestFinish = document.getElementById('requestFinish');
-    const requestForm = document.getElementById('requestForm');
-    requestForm.classList.add("invisible");
-    requestFinish.classList.remove("invisible");
-    setTimeout(function () {
-        requestFinish.classList.add("invisible");
-        requestForm.classList.remove("invisible");
-    }, 800);
+    //document.getElementById('rftel').value = document.getElementById('phone').value;
+    //document.getElementById('rfzip').value = document.getElementById('zip').value;
+    //document.getElementById('rfreq').value = request;
+    //const requestFinish = document.getElementById('requestFinish');
+    //const requestForm = document.getElementById('requestForm');
+    //requestForm.classList.add("invisible");
+    //requestFinish.classList.remove("invisible");
+    //setTimeout(function () {
+    //    requestFinish.classList.add("invisible");
+    //    requestForm.classList.remove("invisible");
+    //}, 800);
     return false;
 }
