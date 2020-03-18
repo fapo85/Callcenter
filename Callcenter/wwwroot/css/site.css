@@ -83,3 +83,11 @@ body {
     top: 0;
     bottom: 0;
 }
+.block {
+    display: block;
+    width: 100%;
+    padding: 14px 28px;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+}

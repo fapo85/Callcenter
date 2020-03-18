@@ -126,3 +126,30 @@ function DelItem(elmid) {
         alert("Element " + elmid + " nicht als bearbeitet Markiert");
     }
 }
+function AddItem() {
+    var request;
+    const radios = document.getElementsByName("request");
+    for (var i = 0; i < radios.length; i++) {
+        if (radios[i].checked) {
+            request = radios[i].value;
+        }
+    }
+    connection.invoke("AddEntry",
+        document.getElementById('id').value,
+        document.getElementById('phone').value,
+        document.getElementById('zip').value,
+        request
+    );
+    document.getElementById('rftel').value = document.getElementById('phone').value;
+    document.getElementById('rfzip').value = document.getElementById('zip').value;
+    document.getElementById('rfreq').value = request;
+    const requestFinish = document.getElementById('requestFinish');
+    const requestForm = document.getElementById('requestForm');
+    requestForm.classList.add("invisible");
+    requestFinish.classList.remove("invisible");
+    setTimeout(function () {
+        requestFinish.classList.add("invisible");
+        requestForm.classList.remove("invisible");
+    }, 800);
+    return false;
+}

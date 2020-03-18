@@ -17,7 +17,7 @@
                         <tr>
                             <th>Zeitpunkt</th>
                             <th>Telefonnummer</th>
-                            <th>Text</th>
+                            <th>Anfrage</th>
                             <th>Bearbeiten</th>
                             <th>Fertig</th>
                         </tr>
@@ -27,8 +27,8 @@
                                 <td>@item.timestamp.ToLocalTime()</td>
                                 <td>@item.phone</td>
                                 <td>@item.request</td>
-                                <td onclick="MarkItem('@item.id')"><i class="fas fa-user-edit" title="In Bearbeitung nehmen"></i></td>
-                                <td onclick="DelItem('@item.id')"><i class="fas fa-thumbs-up" title="Fertigstellen"></i></td>
+                                <td><button class="btn btn-secondary block" onclick="MarkItem('@item.id')"><i class="fas fa-user-edit" title="In Bearbeitung nehmen"></i></button></td>
+                                <td><button class="btn btn-secondary block" onclick="DelItem('@item.id')"><i class="fas fa-thumbs-up" title="Fertigstellen"></i></button></td>
                             </tr>
                         }
                     </table>
@@ -41,7 +41,8 @@
 
     <div class="col-md-3 p-0 bg-white h-md-100 loginarea">
         <div class="d-md-flex align-items-center h-md-100 p-5 justify-content-center fixed">
-            <form method="post" action="/">
+            <div id="requestForm">
+            <form action="#" onsubmit="return AddItem();">
                 <input id="id" name="id" type="hidden">
                 <div class="form-group">
                     <label for="phone">Telefonnummer:</label><br>
@@ -52,6 +53,7 @@
                     <input class="form-control test" type="number" id="zip" name="zip"><br>
                 </div>
                 <div class="form-group">
+                    <label for="request">Anfrage:</label><br>
                     @foreach (EntryRequest er in (EntryRequest[])Enum.GetValues(typeof(EntryRequest)))
                     {
                         <div class="form-check">
@@ -62,9 +64,16 @@
                         </div>
                     }
                 </div>
-                <input type="submit" value="Submit">
+                <input type="submit"class="btn btn-primary" value="Speichern">
             </form>
-
+            </div>
+            <div id="requestFinish" class="invisible alert alert-success" role="alert">
+                <h5>Eintrag Erfolgreich gespeichert.</h5>
+                <p>Telefonnummer: <span id="rftel"></span>.</p>
+                <p>Postleitzahl: <span id="rfzip"></span>.</p>
+                <p>Anfrage: <span id="rfreq"></span>.</p>
+                <h5>Vielen Dank für deine Mühe.</h5>
+            </div>
         </div>
     </div>
 

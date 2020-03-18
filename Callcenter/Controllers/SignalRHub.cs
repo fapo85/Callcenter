@@ -38,14 +38,15 @@ namespace Callcenter.Controllers
             new Task(()=>Clients.All.SendAsync("marked", id)).Start();
             return Clients.Caller.SendAsync("filldata", entry);
         }
-        public void AddEntry(string id, string phone, EntryRequest request, string zip)
+        //public Task AddEntry(string id, string phone, string zip, EntryRequest request)
+        public Task AddEntry(ToAddRequest request)
         {
-            if (String.IsNullOrWhiteSpace(zip))
+            if (String.IsNullOrWhiteSpace(request.zip))
             {
-                zip = "00000";
+                request.zip = "00000";
             }
             Entry entry;
-            if (String.IsNullOrWhiteSpace(id) || id.Equals("000000000000000000000000"))
+            if (String.IsNullOrWhiteSpace(request.id) || request.id.Equals("000000000000000000000000"))
             {
                 entry = new Entry()
                 {
@@ -54,17 +55,19 @@ namespace Callcenter.Controllers
             }
             else
             {
-                var oldvalue = _save.Find(new ObjectId(id));
+                var oldvalue = _save.Find(new ObjectId(request.id));
                 entry = new Entry()
                 {
                     timestamp = oldvalue.timestamp,
                 };
             }
             entry.modifyts = DateTime.Now;
-            entry.phone = phone;
-            entry.zip = zip;
-            entry.request = request;
-            _save.Add(entry);
+            entry.phone = request.phone;
+            entry.zip = request.zip;
+            entry.request = request.request;
+            Task t = new Task(()=>_save.Add(entry));
+            t.Start();
+            return t;
         }
         public Task DeleteEntry(string id)
         {
