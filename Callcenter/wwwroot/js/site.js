@@ -32,11 +32,11 @@ function startConnection() {
             document.getElementById('rftel').innerHTML = data.phone;
             document.getElementById('rfzip').innerHTML = data.zip;
             document.getElementById('rfreq').innerHTML = data.request;
-            requestForm.classList.add("invisible");
-            requestFinish.classList.remove("invisible");
+            requestForm.classList.add("non-visible");
+            requestFinish.classList.remove("non-visible");
             setTimeout(function () {
-                requestFinish.classList.add("invisible");
-                requestForm.classList.remove("invisible");
+                requestFinish.classList.add("non-visible");
+                requestForm.classList.remove("non-visible");
             }, 4000);
         }
     });
@@ -48,12 +48,12 @@ function startConnection() {
         const ErrorWindow = document.getElementById('ErrorWindow');
         if (requestFinish && requestFinish != undefined && requestFinish != null && requestForm && requestForm != undefined && requestForm != null && ErrorWindow && ErrorWindow != undefined && ErrorWindow != null) {
             document.getElementById('ErrorText').innerHTML = data;
-            requestFinish.classList.add("invisible");
-            requestForm.classList.add("invisible");
-            ErrorWindow.classList.remove("invisible");
+            requestFinish.classList.add("non-visible");
+            requestForm.classList.add("non-visible");
+            ErrorWindow.classList.remove("non-visible");
             setTimeout(function () {
-                ErrorWindow.classList.add("invisible");
-                requestForm.classList.remove("invisible");
+                ErrorWindow.classList.add("non-visible");
+                requestForm.classList.remove("non-visible");
             }, 4000);
         }
     });

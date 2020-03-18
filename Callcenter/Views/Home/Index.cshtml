@@ -2,6 +2,17 @@
 @{
     ViewData["Title"] = "Übersicht";
 }
+<head>
+    <style>   
+        .popup{
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .non-visible {
+            display: none !important;
+        }
+    </style>
+</head>
 <div class="d-md-flex h-md-100 align-items-center">
 
     <!-- First Half -->
@@ -70,19 +81,22 @@
                     <input type="submit" class="btn btn-primary block" value="Speichern">
                 </form>
             </div>
-            <div id="requestFinish" class="invisible alert alert-success" role="alert">
-                <h5>Eintrag Erfolgreich gespeichert.</h5>
+            <div id="requestFinish" class="popup non-visible alert-success" role="alert">
+                <p>
+                    <b>Der Eintrag wurde erfolgreich gespeichert!</b>
+                </p>
                 <p>Telefonnummer: <span id="rftel"></span>.</p>
                 <p>Postleitzahl: <span id="rfzip"></span>.</p>
                 <p>Anfrage: <span id="rfreq"></span>.</p>
                 <h5>Vielen Dank für deine Mühe.</h5>
             </div>
-            <div id="ErrorWindow" class="invisible alert alert-danger" role="alert">
-                <h5>Fehler!!!!</h5>
+            <div id="ErrorWindow" class="popup non-visible alert-danger" role="alert">
+                <p>
+                    <b>Ein Fehler ist aufgetreten.</b>
+                </p>
                 <p id="ErrorText"></p>
             </div>
         </div>
     </div>
 
 </div>
-
