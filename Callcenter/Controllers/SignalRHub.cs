@@ -36,7 +36,7 @@ namespace Callcenter.Controllers
                 entry.marked = true;
                 _save.Replace(entry);
             }
-            new Task(()=>Clients.All.SendAsync("marked", id)).Start();
+            Clients.All.SendAsync("marked", id);
             return Clients.Caller.SendAsync("filldata", new EntryFill()
             {
                 id = entry.id.ToString(),
