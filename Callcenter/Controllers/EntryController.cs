@@ -40,7 +40,7 @@ namespace Callcenter.Controllers
                 _save.Replace(entry);
             }
             _hubContext.Clients.All.SendAsync("marked", id).Wait();
-            return Ok();
+            return Ok(entry);
         }
         [HttpGet("/Entry/Free/{id}")]
         public IActionResult UnMark(string id)

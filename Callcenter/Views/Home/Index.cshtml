@@ -10,7 +10,8 @@
     .other {
         background-color: aqua;
     }
-    .fixed{
+
+    .fixed {
         position: fixed;
         top: 0;
         bottom: 0;
@@ -29,6 +30,20 @@
             }
         }
         if (!element.classList.contains("marked")) {
+            Array.from(document.getElementsByClassName("marked")).forEach(elm => {
+                var xhttp = new XMLHttpRequest();
+                xhttp.open("GET", "/Entry/Free/" + element.id, true);
+                xhttp.send();
+                elm.childNodes.forEach(item => {
+                    item.childNodes.forEach(itm => {
+                        if (itm.classList != undefined && itm.classList.contains("fa-times")) {
+                            itm.classList.add("fa-user-edit");
+                            itm.classList.remove("fa-times");
+                        }
+                    });
+                });
+                elm.classList.remove("marked");
+            });
             element.classList.add("marked");
             element.childNodes.forEach(item => {
                 item.childNodes.forEach(itm => {
@@ -40,6 +55,19 @@
             });
             var xhttp = new XMLHttpRequest();
             xhttp.open("GET", "/Entry/Mark/" + elmid, true);
+            xhttp.onload = function () {
+                if (xhttp.status >= 200 && xhttp.status < 400) {
+                    var data = JSON.parse(xhttp.responseText);
+                    document.getElementById('id').value = data.id;
+                    document.getElementById('phone').value = data.phone;
+                    document.getElementById('zip').value = data.zip;
+                } else {
+                    console.log("Error Get");
+                }
+            };
+            xhttp.onerror = function () {
+                console.log("Error Get");
+            };
             xhttp.send();
         } else {
             element.classList.remove("marked");
@@ -54,6 +82,9 @@
             var xhttp = new XMLHttpRequest();
             xhttp.open("GET", "/Entry/Free/" + elmid, true);
             xhttp.send();
+            document.getElementById('id').value = "";
+            document.getElementById('phone').value = "";
+            document.getElementById('zip').value = "";
         }
     }
     function DelItem(elmid) {
@@ -117,12 +148,12 @@
                 <div class="form-group">
                     @foreach (EntryRequest er in (EntryRequest[])Enum.GetValues(typeof(EntryRequest)))
                     {
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="request" id="@((int)er)" value="@((int)er)" checked>
-                                <label class="form-check-label" for="@((int)er)">
-                                    @er.ToString()
-                                </label>
-                            </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="request" id="@((int)er)" value="@((int)er)" checked>
+                            <label class="form-check-label" for="@((int)er)">
+                                @er.ToString()
+                            </label>
+                        </div>
                     }
                 </div>
                 <input type="submit" value="Submit">
@@ -152,7 +183,7 @@
     connection.on("free", function (id) {
         console.log("SignalR - Free: " + id);
         var element = document.getElementById(id);
-        if (element && element != undefined && element != null && !element.classList.contains("marked")) {
+        if (element && element != undefined && element != null) {
             element.classList.remove("other");
         }
     });
