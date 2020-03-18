@@ -22,6 +22,10 @@ namespace Callcenter.Controllers
         {
             ViewData["CountAll"] = _save.CountAll();
             ViewData["CountNoZip"] = _save.CountNoZip();
+            ViewData["CallHour"] = _save.CountCallHour();
+            ViewData["EditHour"] = _save.CountEditHour();
+            ViewData["CallDay"] = _save.CountCallDay();
+            ViewData["EditDay"] = _save.CountEditDay();
             return View(_save.GetAll());
         }
 
