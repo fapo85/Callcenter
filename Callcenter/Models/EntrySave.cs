@@ -20,7 +20,6 @@ namespace Callcenter.Models
         //private readonly MongoClient client;
         //private readonly IMongoDatabase database;
         private IMongoCollection<Entry> collection;
-
         public EntrySave(IOptions<MongoDbConf> options, IHubContext<SignalRHub> hubContext)
         {
             var mongoDbConf = options.Value;
@@ -63,8 +62,25 @@ namespace Callcenter.Models
             }
         }
 
-        public List<Entry> GetAll() => collection.Find(e => true)/*.SortBy(e => e.timestamp)*/.ToList();
-        public List<Entry> GetNoZip() => collection.Find(e => e.zip == "00000")/*.SortBy(e => e.timestamp)*/.ToList();
+        //public List<Entry> GetAll() => collection.Find(e => true).SortBy(e => e.timestamp).ToList();
+        public List<Entry> GetAll()        {
+            var list = collection.Find(e => true).ToList();
+            list.Sort(Entry.Compare);
+            return list;
+        }
+        public long CountAll() => collection.Find(e => true).CountDocuments();
+
+
+
+        //public List<Entry> GetNoZip() => collection.Find(e => e.zip == "00000").SortBy(e => e.timestamp).ToList();
+
+        public List<Entry> GetNoZip()
+        {
+            var list = collection.Find(e => e.zip == "00000").ToList();
+            list.Sort(Entry.Compare);
+            return list;
+        }
+        public long CountNoZip() => collection.Find(e => e.zip == "00000").CountDocuments();
 
         internal void Remove(ObjectId id) => collection.DeleteOne(e => e.id == id);
 

@@ -20,6 +20,8 @@ namespace Callcenter.Controllers
         }
         public IActionResult Index()
         {
+            ViewData["CountAll"] = _save.CountAll();
+            ViewData["CountNoZip"] = _save.CountNoZip();
             return View(_save.GetAll());
         }
 
