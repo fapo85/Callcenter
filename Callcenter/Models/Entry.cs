@@ -50,7 +50,7 @@ namespace Callcenter.Models
 
             if (firstFour.StartsWith("00") && firstFour != "0049")
             {
-                throw new Exception("Not a german number!");
+                throw new Exception("Keine Deutsche Nummer!");
             }
             else if (firstFour == "0049")
             {
@@ -65,7 +65,7 @@ namespace Callcenter.Models
                 case "0180":
                 case "0190":
                 case "1180":
-                    throw new Exception("Number not allowed!");
+                    throw new Exception("Rufnummer nicht erlaubt!");
             }
             foreach (char c in phoneNumber.ToCharArray())
             {
@@ -85,10 +85,10 @@ namespace Callcenter.Models
             if (zip.Length != 5){
                 throw new Exception("Zip ist nicht länge 5");
             }
-            foreach(char c in zip.ToCharArray()){
-                if (!char.IsDigit(c)){
-                    throw new Exception("Zip besteht nicht nur aus Buchstaben.");
-                }
+            Regex rgx = new Regex(@"^\d{5}$");
+            if (!rgx.IsMatch(zip))
+            {
+                throw new Exception("Zip RegEX Fehler.");
             }
         }
     }
