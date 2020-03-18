@@ -29,32 +29,32 @@ namespace Callcenter.Controllers
             return View(new Entry());
         }
 
-        [HttpGet("/Entry/Mark/{id}")]
-        public IActionResult Mark(string id)
-        {
-            Console.WriteLine($"Element {id} Marked");
-            Entry entry = _save.Find(new ObjectId(id));
-            if (entry != null)
-            {
-                entry.marked = true;
-                _save.Replace(entry);
-            }
-            _hubContext.Clients.All.SendAsync("marked", id).Wait();
-            return Ok(entry);
-        }
-        [HttpGet("/Entry/Free/{id}")]
-        public IActionResult UnMark(string id)
-        {
-            Console.WriteLine($"Element {id} Free");
-            Entry entry = _save.Find(new ObjectId(id));
-            if (entry != null)
-            {
-                entry.marked = false;
-                _save.Replace(entry);
-            }
-            _hubContext.Clients.All.SendAsync("free", id).Wait();
-            return Ok();
-        }
+        //[HttpGet("/Entry/Mark/{id}")]
+        //public IActionResult Mark(string id)
+        //{
+        //    Console.WriteLine($"Element {id} Marked");
+        //    Entry entry = _save.Find(new ObjectId(id));
+        //    if (entry != null)
+        //    {
+        //        entry.marked = true;
+        //        _save.Replace(entry);
+        //    }
+        //    _hubContext.Clients.All.SendAsync("marked", id).Wait();
+        //    return Ok(entry);
+        //}
+        //[HttpGet("/Entry/Free/{id}")]
+        //public IActionResult UnMark(string id)
+        //{
+        //    Console.WriteLine($"Element {id} Free");
+        //    Entry entry = _save.Find(new ObjectId(id));
+        //    if (entry != null)
+        //    {
+        //        entry.marked = false;
+        //        _save.Replace(entry);
+        //    }
+        //    _hubContext.Clients.All.SendAsync("free", id).Wait();
+        //    return Ok();
+        //}
 
         [HttpGet("/Entry/Delete/{id}")]
         public IActionResult Delete(string id)

@@ -30,6 +30,21 @@ connection.on("delete", function (id) {
         element.parentElement.removeChild(element);
     }
 });
+connection.on("filldata", function (data) {
+    console.log("SignalR - filldata: " + data.id);
+    const id = document.getElementById('id')
+    if (id && id != undefined && id != null) {
+        id.value = data.id;
+    }
+    const phone = document.getElementById('phone')
+    if (phone && phone != undefined && phone != null) {
+        phone.value = data.phone;
+    }
+    const zip = document.getElementById('zip')
+    if (zip && zip != undefined && zip != null) {
+        zip.value = data.zip;
+    }
+});
 function MarkItem(elmid) {
     const element = document.getElementById(elmid);
     if (element.classList.contains("other")) {
@@ -65,22 +80,11 @@ function MarkItem(elmid) {
                 }
             });
         });
-        var xhttp = new XMLHttpRequest();
-        xhttp.open("GET", "/Entry/Mark/" + elmid, true);
-        xhttp.onload = function () {
-            if (xhttp.status >= 200 && xhttp.status < 400) {
-                var data = JSON.parse(xhttp.responseText);
-                document.getElementById('id').value = data.id;
-                document.getElementById('phone').value = data.phone;
-                document.getElementById('zip').value = data.zip;
-            } else {
-                console.log("Error Get");
-            }
-        };
-        xhttp.onerror = function () {
-            console.log("Error Get");
-        };
-        xhttp.send();
+        connection.invoke("MarkEntry", elmid).done(data => {
+            document.getElementById('id').value = data.id;
+            document.getElementById('phone').value = data.phone;
+            document.getElementById('zip').value = data.zip;
+        });
     } else {
         element.classList.remove("marked");
         element.childNodes.forEach(item => {
@@ -91,9 +95,7 @@ function MarkItem(elmid) {
                 }
             });
         });
-        var xhttp = new XMLHttpRequest();
-        xhttp.open("GET", "/Entry/Free/" + elmid, true);
-        xhttp.send();
+        connection.invoke("FreeEntry", elmid);
         document.getElementById('id').value = "";
         document.getElementById('phone').value = "";
         document.getElementById('zip').value = "";
