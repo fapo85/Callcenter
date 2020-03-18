@@ -84,10 +84,10 @@ namespace Callcenter.Models
         }
         public long CountNoZip() => collection.Find(e => e.zip == "00000").CountDocuments();
 
-        internal long CountCallHour() => 0;// collection.Find(e => (DateTime.Now - e.timestamp).Ticks / TimeSpan.TicksPerMinute <= 60).CountDocuments();
-        internal long CountEditHour() => 0;// collection.Find(e => e.modifyts.HasValue && (DateTime.Now - e.modifyts.Value).Ticks / TimeSpan.TicksPerMinute <= 60).CountDocuments();
-        internal long CountCallDay() => 0;// collection.Find(e => (DateTime.Now - e.timestamp).Ticks / TimeSpan.TicksPerMinute <= 1440).CountDocuments();
-        internal long CountEditDay() => 0;// collection.Find(e => e.modifyts.HasValue && (DateTime.Now - e.modifyts.Value).Ticks / TimeSpan.TicksPerMinute <= 1440).CountDocuments();
+        internal long CountCallHour() => collection.Find(e => e.timestamp > DateTime.Now.Subtract(TimeSpan.FromMinutes(60))).CountDocuments();
+        internal long CountEditHour() => collection.Find(e => e.modifyts.HasValue && e.modifyts > DateTime.Now.Subtract(TimeSpan.FromMinutes(60))).CountDocuments();
+        internal long CountCallDay() => collection.Find(e => e.timestamp > DateTime.Now.Subtract(TimeSpan.FromMinutes(1440))).CountDocuments();
+        internal long CountEditDay() => collection.Find(e => e.modifyts.HasValue && e.modifyts > DateTime.Now.Subtract(TimeSpan.FromMinutes(1440))).CountDocuments();
 
         internal void Remove(ObjectId id) => collection.DeleteOne(e => e.id == id);
 
