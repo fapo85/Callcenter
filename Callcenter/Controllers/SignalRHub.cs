@@ -83,12 +83,12 @@ namespace Callcenter.Controllers
             {
                 StringBuilder sb = new StringBuilder();
                 sb.Append("Fehler: ");
-                sb.AppendLine(e.Message);
                 DataContractJsonSerializer dcjs = new DataContractJsonSerializer(entry.GetType());
                 using (MemoryStream ms = new MemoryStream()){
                     dcjs.WriteObject(ms, entry);
                     sb.AppendLine(Encoding.Default.GetString(ms.ToArray()));
-                }
+                };
+                sb.AppendLine(e.ToString());
                 Console.WriteLine(sb.ToString());
                 return Clients.Caller.SendAsync("Error", e.Message);
             }

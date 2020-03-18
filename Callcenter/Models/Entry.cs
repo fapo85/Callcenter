@@ -45,12 +45,12 @@ namespace Callcenter.Models
         public static void ValidateTel(string phoneNumber)
         {
             if (phoneNumber.Length < 6)
-                throw new Exception("Nummer zu klein");
+                throw new Exception("Die Telefonnummer ist zu kurz.");
             string firstFour = phoneNumber.Substring(0, 4);
 
             if (firstFour.StartsWith("00") && firstFour != "0049")
             {
-                throw new Exception("Keine Deutsche Nummer!");
+                throw new Exception("Nur Telefonnummern aus Deutschland zulässig!");
             }
             else if (firstFour == "0049")
             {
@@ -71,24 +71,19 @@ namespace Callcenter.Models
             {
                 if (!char.IsDigit(c))
                 {
-                    throw new Exception("Phone besteht nicht nur aus Zahlen.");
+                    throw new Exception("Die Telefonnummer besteht nicht nur aus Zahlen.");
                 }
             }
             Regex rgx = new Regex(@"^(0049\d{5,}|0[1-9]\d{4,}|\+49\d{5,})$");
             if (!rgx.IsMatch(phoneNumber))
             {
-                throw new Exception("Phone RegEX Fehler.");
+                throw new Exception("Die Telefonnummer ist ungültig.");
             }
         }
         public static void ValidateZip(string zip)
         {
-            if (zip.Length != 5){
-                throw new Exception("Zip ist nicht länge 5");
-            }
-            Regex rgx = new Regex(@"^\d{5}$");
-            if (!rgx.IsMatch(zip))
-            {
-                throw new Exception("Zip RegEX Fehler.");
+            if (zip.Length != 5 || !new Regex(@"^\d{5}$").IsMatch(zip)){
+                throw new Exception("Die Postleitzahl ist ungültig.");
             }
         }
     }

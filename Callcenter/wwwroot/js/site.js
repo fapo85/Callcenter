@@ -41,7 +41,7 @@ function startConnection() {
             setTimeout(function () {
                 requestFinish.classList.add("invisible");
                 requestForm.classList.remove("invisible");
-            }, 800);
+            }, 4000);
         }
     });
     connection.on("Error", function (data) {
@@ -58,7 +58,7 @@ function startConnection() {
             setTimeout(function () {
                 ErrorWindow.classList.add("invisible");
                 requestForm.classList.remove("invisible");
-            }, 1800);
+            }, 4000);
         }
     });
     connection.on("filldata", function (data) {
@@ -191,7 +191,7 @@ function DelItem(elmid) {
             }
         }
     } else {
-        alert("Element " + elmid + " nicht als bearbeitet Markiert");
+        alert("Um den Eintrag abschließen zu können, müssen Sie ihn zunächst bearbeiten.");
     }
 }
 function AddItem() {
