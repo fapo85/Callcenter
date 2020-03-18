@@ -9,6 +9,9 @@ using Callcenter.Models;
 using Microsoft.AspNetCore.SignalR;
 using MongoDB.Bson;
 using System.Security.Authentication;
+using System.Text;
+using System.Runtime.Serialization.Json;
+using System.IO;
 
 namespace Callcenter.Controllers
 {
@@ -37,28 +40,46 @@ namespace Callcenter.Controllers
         [HttpPost]
         public IActionResult Send(string id, string phone, EntryRequest request, string zip)
         {
-            if (String.IsNullOrWhiteSpace(zip))
+            Entry entry = null;
+            try
             {
-                zip = "00000";
-            }
-            Entry entry;
-            if (String.IsNullOrWhiteSpace(id) || id.Equals("000000000000000000000000"))
-            {
-                entry = new Entry()
+                if (String.IsNullOrWhiteSpace(zip))
                 {
-                    timestamp = DateTime.Now,
-                    phone = phone,
-                    zip = zip,
-                    request = request
-                };
-                entry.Validate();
-                _save.Add(entry);
-            }
-            else
+                    zip = "00000";
+                }
+                
+                if (String.IsNullOrWhiteSpace(id) || id.Equals("000000000000000000000000"))
+                {
+                    entry = new Entry()
+                    {
+                        timestamp = DateTime.Now,
+                        phone = phone,
+                        zip = zip,
+                        request = request
+                    };
+                    entry.Validate();
+                    _save.Add(entry);
+                }
+                else
+                {
+                    throw new NotSupportedException("Bearbeiten nicht erlaubt");
+                }
+                return View(entry);
+            }catch(Exception e)
             {
-                throw new NotSupportedException("Bearbeiten nicht erlaubt");
+                StringBuilder sb = new StringBuilder();
+                sb.Append("Fehler: ");
+                if (entry != null) { }
+                DataContractJsonSerializer dcjs = new DataContractJsonSerializer(entry.GetType());
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    dcjs.WriteObject(ms, entry);
+                    sb.AppendLine(Encoding.Default.GetString(ms.ToArray()));
+                };
+                sb.AppendLine(e.ToString());
+                Console.WriteLine(sb.ToString());
+                return BadRequest(e.Message);
             }
-            return View(entry);
         }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

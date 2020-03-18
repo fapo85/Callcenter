@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Callcenter.Models;
 using MongoDB.Bson;
+using System.Text;
+using System.Runtime.Serialization.Json;
+using System.IO;
 
 namespace Callcenter.Controllers
 {
@@ -27,13 +30,13 @@ namespace Callcenter.Controllers
         [HttpPost]
         public IActionResult Index(string id, string phone, EntryRequest request, string zip)
         {
+            Entry entry = null;
             try
             {
                 if (String.IsNullOrWhiteSpace(zip))
                 {
                     zip = "00000";
                 }
-                Entry entry;
                 if (String.IsNullOrWhiteSpace(id) || id.Equals("000000000000000000000000"))
                 {
                     entry = new Entry()
@@ -61,8 +64,20 @@ namespace Callcenter.Controllers
                     _save.Replace(entry);
                 }
                 return View(_save.GetNoZip());
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
+                StringBuilder sb = new StringBuilder();
+                sb.Append("Fehler: ");
+                if (entry != null) { }
+                DataContractJsonSerializer dcjs = new DataContractJsonSerializer(entry.GetType());
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    dcjs.WriteObject(ms, entry);
+                    sb.AppendLine(Encoding.Default.GetString(ms.ToArray()));
+                };
+                sb.AppendLine(e.ToString());
+                Console.WriteLine(sb.ToString());
                 return BadRequest(e.Message);
             }
         }
