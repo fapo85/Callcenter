@@ -84,3 +84,6 @@ body {
     top: 0;
     bottom: 0;
 }
+.invalid {
+    border-color: red;
+}

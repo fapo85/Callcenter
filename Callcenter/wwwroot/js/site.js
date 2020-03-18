@@ -1,13 +1,9 @@
 ﻿"use strict";
 var connection = new signalR.HubConnectionBuilder().withUrl("/Hub").withAutomaticReconnect().build();
 function startConnection() {
+    connection.c
     connection.start().then(function () {
     }).catch(function (err) {
-        console.log("Verbindung Unterbrochen")
-        setTimeout(function () {
-            console.log("Seite wird neu geladen");
-            window.location = "/";
-        }, 2000);
         return console.error(err.toString());
     });
 
@@ -195,6 +191,7 @@ function DelItem(elmid) {
     }
 }
 function AddItem() {
+    
     var request;
     const radios = document.getElementsByName("request");
     for (var i = 0; i < radios.length; i++) {
@@ -208,16 +205,50 @@ function AddItem() {
         document.getElementById('zip').value,
         request
     );
-    //document.getElementById('rftel').value = document.getElementById('phone').value;
-    //document.getElementById('rfzip').value = document.getElementById('zip').value;
-    //document.getElementById('rfreq').value = request;
-    //const requestFinish = document.getElementById('requestFinish');
-    //const requestForm = document.getElementById('requestForm');
-    //requestForm.classList.add("invisible");
-    //requestFinish.classList.remove("invisible");
-    //setTimeout(function () {
-    //    requestFinish.classList.add("invisible");
-    //    requestForm.classList.remove("invisible");
-    //}, 800);
     return false;
+}
+function validatePhone() {
+    const phone = document.getElementById("phone");
+    if (phone && phone != undefined && phone != null) {
+        var rgx = new RegExp("^(0049\d{5,}|0[1-9]\d{4,}|\+49\d{5,})$",);
+        if (phone.value.match(rgx)) {
+            phone.classList.remove("invalid");
+            return true;
+        } else {
+            phone.classList.add("invalid");
+        }
+    }
+    return false;
+}
+function validateZip() {
+    const zip = document.getElementById("zip");
+    if (zip && zip != undefined && zip != null) {
+        var rgx = new RegExp("^\d{5}$",);
+        if (zip.value.match(rgx)) {
+            zip.classList.remove("invalid");
+            return true;
+        } else {
+            zip.classList.add("invalid");
+        }
+    }
+    return false;
+}
+function validateAuswahl() {
+    const radios = document.getElementsByName("request");
+    var ok = false;
+    if (zip && zip != undefined && zip != null) {
+        for (var i = 0; i < radios.length; i++) {
+            if (radios[i].checked) {
+                ok = true;
+            }
+        }
+        for (var i = 0; i < radios.length; i++) {
+            if (ok) {
+                radios[i].classList.remove("invalid");
+            } else {
+                radios[i].classList.add("invalid");
+            }
+        }
+    }
+    return ok;
 }

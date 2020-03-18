@@ -74,17 +74,19 @@ namespace Callcenter.Models
                     throw new Exception("Die Telefonnummer besteht nicht nur aus Zahlen.");
                 }
             }
-            Regex rgx = new Regex(@"^(0049\d{5,}|0[1-9]\d{4,}|\+49\d{5,})$");
-            if (!rgx.IsMatch(phoneNumber))
+            if (!TelRgx.IsMatch(phoneNumber))
             {
                 throw new Exception("Die Telefonnummer ist ungültig.");
             }
         }
         public static void ValidateZip(string zip)
         {
-            if (zip.Length != 5 || !new Regex(@"^\d{5}$").IsMatch(zip)){
+            if (zip.Length != 5 || !ZipRgx.IsMatch(zip)){
                 throw new Exception("Die Postleitzahl ist ungültig.");
             }
         }
+
+        private static readonly Regex TelRgx = new Regex(@"^(0049\d{5,}|0[1-9]\d{4,}|\+49\d{5,})$");
+        private static readonly Regex ZipRgx = new Regex(@"^\d{5}$");
     }
 }
