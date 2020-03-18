@@ -41,21 +41,7 @@ function startConnection() {
         }
     });
     connection.on("Error", function (data) {
-        console.error("Fehler:");
-        console.error(data);
-        const requestFinish = document.getElementById('requestFinish');
-        const requestForm = document.getElementById('requestForm');
-        const ErrorWindow = document.getElementById('ErrorWindow');
-        if (requestFinish && requestFinish != undefined && requestFinish != null && requestForm && requestForm != undefined && requestForm != null && ErrorWindow && ErrorWindow != undefined && ErrorWindow != null) {
-            document.getElementById('ErrorText').innerHTML = data;
-            requestFinish.classList.add("non-visible");
-            requestForm.classList.add("non-visible");
-            ErrorWindow.classList.remove("non-visible");
-            setTimeout(function () {
-                ErrorWindow.classList.add("non-visible");
-                requestForm.classList.remove("non-visible");
-            }, 4000);
-        }
+        ShowErrorMsg(data, 4000);
     });
     connection.on("filldata", function (data) {
         const id = document.getElementById('id')
@@ -193,13 +179,16 @@ function DelItem(elmid) {
 function AddItem() {
     var request;
     if(!validatePhone()){
-        Error("Telefonnummer ist nicht Korregt");
+        ShowErrorMsg("Telefonnummer ist nicht Korregt", 2000);
+        return;
     }
     if (!validateZip()) {
-        Error("Postleitzahl ist nicht Korregt");
+        ShowErrorMsg("Postleitzahl ist nicht Korregt", 2000);
+        return;
     }
     if (!validateAuswahl()) {
-        Error("Auswahl ist nicht Korregt");
+        ShowErrorMsg("Auswahl ist nicht Korregt", 2000);
+        return;
     }
     const radios = document.getElementsByName("request");
     for (var i = 0; i < radios.length; i++) {
@@ -260,19 +249,20 @@ function validateAuswahl() {
     }
     return ok;
 }
-function Error(message) {
-    console.error(data);
+function ShowErrorMsg(msg, time) {
+    console.error("Fehler:");
+    console.error(msg);
     const requestFinish = document.getElementById('requestFinish');
     const requestForm = document.getElementById('requestForm');
     const ErrorWindow = document.getElementById('ErrorWindow');
     if (requestFinish && requestFinish != undefined && requestFinish != null && requestForm && requestForm != undefined && requestForm != null && ErrorWindow && ErrorWindow != undefined && ErrorWindow != null) {
-        document.getElementById('ErrorText').innerHTML = data;
-        requestFinish.classList.add("invisible");
-        requestForm.classList.add("invisible");
-        ErrorWindow.classList.remove("invisible");
+        document.getElementById('ErrorText').innerHTML = msg;
+        requestFinish.classList.add("non-visible");
+        requestForm.classList.add("non-visible");
+        ErrorWindow.classList.remove("non-visible");
         setTimeout(function () {
-            ErrorWindow.classList.add("invisible");
-            requestForm.classList.remove("invisible");
-        }, 2000);
+            ErrorWindow.classList.add("non-visible");
+            requestForm.classList.remove("non-visible");
+        }, time);
     }
 }
