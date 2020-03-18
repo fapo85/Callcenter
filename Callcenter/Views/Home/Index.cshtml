@@ -82,7 +82,7 @@
                         @foreach (var item in Model)
                         {
                             <tr id="@item.id" class="@item.CString">
-                                <td>@item.timestamp</td>
+                                <td>@item.timestamp.ToLocalTime()</td>
                                 <td>@item.phone</td>
                                 <td>@item.request</td>
                                 <td onclick="MarkItem('@item.id')"><i class="fas fa-user-edit" title="In Bearbeitung nehmen"></i></td>

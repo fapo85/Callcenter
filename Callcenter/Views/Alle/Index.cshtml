@@ -17,7 +17,7 @@
             @foreach(var item in Model)
             {
         <tr>
-            <td>@item.timestamp</td>
+            <td>@item.timestamp.ToLocalTime()</td>
             <td>@item.phone</td>
             <td>@item.zip</td>
             <td>@item.request.ToString()</td>
