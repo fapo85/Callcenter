@@ -19,6 +19,7 @@ namespace Callcenter.Models
         public Captcha Generate()
         {
             Captcha capacha = GenerateNewCpatcha();
+            //sudo apt install libgdiplus
             using (FileStream fs = File.OpenWrite(capacha.ImgFSPath))
             using (Stream picStream = ImageFactory.BuildImage(capacha.Secret, 50, 100, 20, 10, ImageFormatType.Jpeg))
             {
