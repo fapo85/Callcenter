@@ -21,7 +21,7 @@ namespace Callcenter.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IHubContext<SignalRHub> _hubContext;
         private readonly EntrySave _save;
-        private static readonly CaptchaFactory capatchaFactory = new CaptchaFactory();
+        //private static readonly CaptchaFactory capatchaFactory = new CaptchaFactory();
         public FrameController(ILogger<HomeController> logger, IHubContext<SignalRHub> hubContext, EntrySave save)
         {
             _logger = logger;
@@ -42,10 +42,10 @@ namespace Callcenter.Controllers
         }
         public IActionResult AddFrame(Entry entry, string msg = null)
         {
-            Captcha captcha = capatchaFactory.Generate();
-            ViewData["captchaid"] = captcha.id;
-            ViewData["captchapath"] = captcha.ImgPath;
-            ViewData["msg"] = msg;
+           // Captcha captcha = capatchaFactory.Generate();
+           // ViewData["captchaid"] = captcha.id;
+           // ViewData["captchapath"] = captcha.ImgPath;
+           // ViewData["msg"] = msg;
             return View("Add", entry);
         }
         [HttpPost]
@@ -68,10 +68,11 @@ namespace Callcenter.Controllers
                         zip = zip,
                         request = request
                     };
-                    if(capatchaFactory.VerifyAndDelete(captchaid, captchasecret.ToUpper()))
+                    //if(capatchaFactory.VerifyAndDelete(captchaid, captchasecret.ToUpper()))
+                    if(true)
                     {
                         entry.Validate();
-                        _save.Add(entry);
+                       // _save.Add(entry);
                     }else{
                         return AddFrame(entry, "Captcha nicht gelöst");
                     }
