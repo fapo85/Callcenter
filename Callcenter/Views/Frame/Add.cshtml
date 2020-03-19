@@ -15,6 +15,20 @@
             }, 2000);
         }
     }
+    function validateCaptcha() {
+    const captchasecret = document.getElementById("captchasecret");
+    if (captchasecret && captchasecret != undefined && captchasecret != null) {
+        //var rgx = new RegExp("^\\d{5}$");
+        //if (captchasecret.value.match(rgx)) {
+        if (captchasecret.value.length == 5) {
+            captchasecret.classList.remove("invalid");
+            return true;
+        } else {
+            captchasecret.classList.add("invalid");
+        }
+    }
+    return false;
+}
     function validateFrame() {
         if (!validatePhone()) {
             ShowErrorMsgFrame("Telefonnummer ist nicht korrekt");
@@ -26,6 +40,10 @@
         }
         if (!validateAuswahl()) {
             ShowErrorMsgFrame("Auswahl ist nicht korrekt");
+            return false;
+        }
+        if (!validateCaptcha()) {
+            ShowErrorMsgFrame("Captcha ist nicht korrekt");
             return false;
         }
         return true;
@@ -40,12 +58,18 @@
             ErrorWindow.classList.add("invisible");
         }
     }
+    function valiCaptcha() {
+        if (validateCaptcha()) {
+            ErrorWindow.classList.add("invisible");
+        }
+    }
 </script>
 <div class="text-center">
     <h1 class="display-4">@ViewData["Title"]</h1>
 </div>
 <div id="addspace">
     <form method="post" action="/frame/send" onsubmit="return validateFrame();">
+        <input id="captchaid" name="captchaid" type="hidden" value="@ViewData["captchaid"]">
         <input id="id" name="id" type="hidden" value="@Model.id">
         <div class="form-group">
             <label for="phone">Telefonnummer:</label><br>
@@ -81,6 +105,10 @@
                 }
             }
         </div>
+        <div class="form-group">
+            <label for="zip">Captcha:</label><img src="@ViewData["captchapath"]" alt="Captcha Picture" /><br>
+            <input class="form-control input-lg test" type="text" id="captchasecret" name="captchasecret" onchange="valiCaptcha();" value="" required><br>
+        </div>
         <input type="submit" value="Submit">
     </form>
     <br />
@@ -90,4 +118,13 @@
         </p>
         <p id="ErrorText"></p>
     </div>
+    @if (ViewData["msg"] != null)
+    {
+    <div id="ErrorWindow" class="popup alert-danger" role="alert">
+        <p>
+            <b>Ein Fehler ist aufgetreten.</b>
+        </p>
+        <p id="ErrorText">@ViewData["msg"]</p>
+    </div>
+    }
 </div>
