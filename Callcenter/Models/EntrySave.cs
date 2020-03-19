@@ -58,9 +58,9 @@ namespace Callcenter.Models
         }
 
         //public List<Entry> GetAll() => collection.Find(e => true).SortBy(e => e.timestamp).ToList();
-        public List<Entry> GetAll()
+        public List<Entry> GetAll(int skip, int limit)
         {
-            var list = collection.Find(e => true).ToList();
+            var list = collection.Find(e => true).Skip(skip).Limit(limit).ToList();
             list.Sort(Entry.Compare);
             return list;
         }

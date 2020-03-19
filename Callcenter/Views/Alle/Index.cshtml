@@ -27,6 +27,12 @@
             }
         </table>
     </div>
+    @if ((long)ViewData["NaechstenAnz"] > 0)
+    {
+    <div>
+        <a href="/Alle/@ViewData["NaechsteSkip"]">Nächsten @ViewData["NaechstenAnz"] einträge laden.</a>
+    </div>
+    }
     <div>
         <br /><br />
               <div class="alert alert-secondary" role="alert">
