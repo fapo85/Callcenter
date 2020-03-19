@@ -39,8 +39,9 @@ namespace Callcenter.Controllers
             limit = Math.Min(limit, MAXLIMITLIMIT);
             long countall =_save.CountAll();
             long nextskip = Math.Min(countall, skip + DEFAULTLIMIT);
+            long NaechstenAnz = Math.Min(countall - nextskip, DEFAULTLIMIT);
             ViewData["CountAll"] = countall;
-            ViewData["NaechstenAnz"] = Math.Min(countall - nextskip, DEFAULTLIMIT);
+            ViewData["NaechstenAnz"] = NaechstenAnz > 0 ? NaechstenAnz.ToString() : string.Empty;
             ViewData["NaechsteSkip"] = nextskip;
             ViewData["CountNoZip"] = _save.CountNoZip();
             ViewData["CallHour"] = _save.CountCallHour();

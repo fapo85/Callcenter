@@ -27,7 +27,7 @@
             }
         </table>
     </div>
-    @if ((long)ViewData["NaechstenAnz"] > 0)
+    @if (!string.Empty.Equals(ViewData["NaechstenAnz"]))
     {
     <div>
         <a href="/Alle/@ViewData["NaechsteSkip"]">Nächsten @ViewData["NaechstenAnz"] einträge laden.</a>
