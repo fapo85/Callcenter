@@ -72,7 +72,7 @@ namespace Callcenter.Controllers
                     if(true)
                     {
                         entry.Validate();
-                       // _save.Add(entry);
+                       _save.Add(entry);
                     }else{
                         return AddFrame(entry, "Captcha nicht gelöst");
                     }
