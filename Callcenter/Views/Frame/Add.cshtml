@@ -42,10 +42,10 @@
             ShowErrorMsgFrame("Auswahl ist nicht korrekt");
             return false;
         }
-        //if (!validateCaptcha()) {
-        //    ShowErrorMsgFrame("Captcha ist nicht korrekt");
-        //    return false;
-        //}
+        if (!validateCaptcha()) {
+            ShowErrorMsgFrame("Captcha ist nicht korrekt");
+            return false;
+        }
         return true;
     }
     function valiPhone() {
@@ -105,10 +105,10 @@
                 }
             }
         </div>
-        @*<div class="form-group">
-            <label for="zip">Captcha:</label><img src="@ViewData["captchapath"]" alt="Captcha Picture" /><br>
+        <div class="form-group">
+            <label for="zip">Captcha:</label><img src="/Frame/Captcha/@ViewData["captchaid"]" alt="Captcha Picture" /><br>
             <input class="form-control input-lg test" type="text" id="captchasecret" name="captchasecret" onchange="valiCaptcha();" value="" required><br>
-        </div>*@
+        </div>
         <input type="submit" value="Submit">
     </form>
     <br />

@@ -92,7 +92,6 @@ namespace Callcenter.Models
             {
                 entry.id = MongoDB.Bson.ObjectId.GenerateNewId();
             }
-
             collection.InsertOne(entry);
         }
 

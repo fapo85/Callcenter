@@ -1,4 +1,5 @@
-﻿using CaptchaGen.NetCore;
+﻿
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,20 +17,9 @@ namespace Callcenter.Models
 
         private readonly Random random = new Random();
         private readonly Dictionary<string, Captcha> Save = new Dictionary<string, Captcha>();
-        public Captcha Generate()
-        {
-            Captcha capacha = GenerateNewCpatcha();
-            //sudo apt install libgdiplus
-            using (FileStream fs = File.OpenWrite(capacha.ImgFSPath))
-            using (Stream picStream = ImageFactory.BuildImage(capacha.Secret, 50, 100, 20, 10, ImageFormatType.Jpeg))
-            {
-                picStream.CopyTo(fs);
-            }
-            return capacha;
-        }
 
         
-        private Captcha GenerateNewCpatcha()
+        public Captcha Generate()
         {
             string secret = RandomString(SECRETLENTH);
             string id;
@@ -44,6 +34,19 @@ namespace Callcenter.Models
                 return captcha;
             }
         }
+
+        internal byte[] GetImgBytes(string id)
+        {
+            Captcha captcha = null;
+            lock (Save)
+            {
+                captcha = Save.GetValueOrDefault(id);
+            }
+            if (captcha == null)
+                throw new FileNotFoundException("id nicht Gefunden");
+            return captcha.CaptchaByteData;
+        }
+
         public bool VerifyAndDelete(string id, string secret)
         {
             Cleanup();
@@ -64,7 +67,6 @@ namespace Callcenter.Models
 
         private void Cleanup(Captcha captcha)
         {
-            File.Delete(captcha.ImgFSPath);
             Save.Remove(captcha.id);
         }
 
