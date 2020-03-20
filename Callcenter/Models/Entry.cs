@@ -23,7 +23,17 @@ namespace Callcenter.Models
         public bool marked { get; set; }
         public object __v { get; set; }
         public string CString => marked ? "other" : string.Empty;
-
+        public EntryFill TrasportModel => new EntryFill()
+        {
+            id = id.ToString(),
+            timestamp = timestamp,
+            modifyts = modifyts,
+            phone = phone,
+            zip = zip,
+            request = request.ToString(),
+            requestid = (int)request,
+            marked = marked
+        };
         internal static int Compare(Entry x, Entry y)
         {
             return DateTime.Compare(x.timestamp, y.timestamp);

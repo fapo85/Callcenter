@@ -7,18 +7,6 @@ function startConnection() {
         return console.error(err.toString());
     });
 
-    connection.on("marked", function (id) {
-        var element = document.getElementById(id);
-        if (element && element != undefined && element != null && !element.classList.contains("marked")) {
-            element.classList.add("other");
-        }
-    });
-    connection.on("free", function (id) {
-        var element = document.getElementById(id);
-        if (element && element != undefined && element != null) {
-            element.classList.remove("other");
-        }
-    });
     connection.on("delete", function (id) {
         var element = document.getElementById(id);
         if (element && element != undefined && element != null) {
@@ -63,9 +51,17 @@ function startConnection() {
             }
         }
     });
-    connection.on("insert", function (entry) {
-        const object = JSON.parse(entry);
-        if (document.getElementById(object._id) !== null) {
+    connection.on("insert", function (object) {
+        console.log(object);
+        var bisherigesObject = document.getElementById(object.id);
+        if (bisherigesObject !== null) {
+            if (object.marked) {
+                if (!bisherigesObject.classList.contains("marked")) {
+                    bisherigesObject.classList.add("other");
+                }
+            } else {
+                bisherigesObject.classList.remove("other");
+            }
             return;
         }
         object.timestamp = new Date(object.timestamp);
@@ -90,7 +86,7 @@ function startConnection() {
         object.cstring = object.marked ? "other" : "";
 
         $("#entries").find('tbody')
-            .append($('<tr  id="' + object._id + '" class="' + object.cstring + '">')
+            .append($('<tr  id="' + object.id + '" class="' + object.cstring + '">')
                 .append($('<td>')
                     .append(object.timestamp.toLocaleString("de"))
                 )
@@ -101,12 +97,12 @@ function startConnection() {
                     .append(object.request)
                 )
                 .append($('<td>')
-                    .append($('<button class="btn btn-secondary btn-sm btn-block" onclick="MarkItem(\'' + object._id + '\')">')
+                    .append($('<button class="btn btn-secondary btn-sm btn-block" onclick="MarkItem(\'' + object.id + '\')">')
                         .append('<i class="fas fa-user-edit" title="In Bearbeitung nehmen">')
                     )
                 )
                 .append($('<td>')
-                    .append($('<button class="btn btn-secondary btn-sm btn-block" onclick="DelItem(\'' + object._id + '\')">')
+                    .append($('<button class="btn btn-secondary btn-sm btn-block" onclick="DelItem(\'' + object.id + '\')">')
                         .append('<i class="fas fa-thumbs-up" title="Fertigstellen">')
                     )
                 )
@@ -157,23 +153,6 @@ function MarkItem(elmid) {
             }
         }
     }
-}
-function bevorunload() {
-    //const allelements = Array.from(document.getElementsByClassName("marked"));
-    //if (allelements.length > 0) {
-    //    const isConfirmed = confirm("Es ist noch ein Beitrag in Bearbeitung. Schließen?");
-    //    if (!isConfirmed) {
-    //        return;
-    //    }
-    //    allelements.forEach(item => {
-    //        connection.invoke("FreeEntry", item.id);
-    //        Array.from(elm.getElementsByClassName("fa-times")).forEach(itm => {
-    //            itm.classList.add("fa-user-edit");
-    //            itm.classList.remove("fa-times");
-    //        });
-    //        elm.classList.remove("marked");
-    //    });
-    //}
 }
 function DelItem(elmid) {
     var element = document.getElementById(elmid);

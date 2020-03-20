@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Callcenter.Models;
 using Microsoft.AspNetCore.SignalR;
-using MongoDB.Bson;
-using System.Security.Authentication;
 using System.Text;
 using System.Runtime.Serialization.Json;
 using System.IO;
@@ -19,18 +14,19 @@ namespace Callcenter.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IHubContext<SignalRHub> _hubContext;
-        private readonly EntrySave _save;
-        private static readonly CaptchaFactory capatchaFactory = new CaptchaFactory();
-        public FrameController(ILogger<HomeController> logger, IHubContext<SignalRHub> hubContext, EntrySave save)
+        private readonly DBConnection _save;
+        private readonly CaptchaFactory capatchaFactory;
+        public FrameController(ILogger<HomeController> logger, IHubContext<SignalRHub> hubContext, DBConnection save)
         {
             _logger = logger;
             _hubContext = hubContext;
             _save = save;
+            capatchaFactory = new CaptchaFactory(save);
         }
 
         public IActionResult Index()
         {
-            return View(new Entry());
+            return Redirect("https://www.krisenkultur.de");
         }
 
         [HttpGet("/Frame/Add")]
@@ -97,6 +93,12 @@ namespace Callcenter.Controllers
                 Console.WriteLine(sb.ToString());
                 return BadRequest(e.Message);
             }
+        }
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+        [HttpGet("/Frame/CheckStatus")]
+        public IActionResult CheckStatus()
+        {
+            return Ok();
         }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

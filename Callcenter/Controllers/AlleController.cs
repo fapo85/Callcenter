@@ -12,10 +12,10 @@ namespace Callcenter.Controllers
     public class AlleController : Controller
     {
         private readonly ILogger<AlleController> _logger;
-        private readonly EntrySave _save;
+        private readonly DBConnection _save;
         private const int DEFAULTLIMIT  = 30;
         private const int MAXLIMITLIMIT = 100000;
-        public AlleController(ILogger<AlleController> logger, EntrySave save)
+        public AlleController(ILogger<AlleController> logger, DBConnection save)
         {
             _logger = logger;
             _save = save;

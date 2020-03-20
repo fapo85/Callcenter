@@ -11,55 +11,44 @@ namespace Callcenter.Models
 {
     public class CaptchaFactory
     {
-        private static readonly TimeSpan GÜLTIGKEIT = TimeSpan.FromMinutes(15);
-        private static readonly int IDLENTH = 15;
-        private static readonly int SECRETLENTH = 5;
+        public static readonly TimeSpan GÜLTIGKEIT = TimeSpan.FromMinutes(15);
+        public const int SECRETLENTH = 5;
 
-        private readonly Random random = new Random();
-        private readonly Dictionary<string, Captcha> Save = new Dictionary<string, Captcha>();
+        private readonly DBConnection save;
+        //private readonly Dictionary<string, Captcha> Save = new Dictionary<string, Captcha>();
+        public CaptchaFactory(DBConnection save)
+        {
+            this.save = save;
+        }
 
-        
         public Captcha Generate()
         {
-            string secret = RandomString(SECRETLENTH);
-            string id;
-            lock (Save)
-            {
-                do
-                {
-                    id = RandomString(IDLENTH);
-                } while (Save.ContainsKey(id));
-                Captcha captcha = new Captcha(id, secret);
-                Save.Add(id, captcha);
-                return captcha;
-            }
+            string secret = GenSecret();
+            Captcha captcha = new Captcha(MongoDB.Bson.ObjectId.GenerateNewId(), secret);
+            save.AddCaptcha(captcha);
+            return captcha;
         }
 
         internal byte[] GetImgBytes(string id)
         {
-            Captcha captcha = null;
-            lock (Save)
-            {
-                captcha = Save.GetValueOrDefault(id);
-            }
+            Captcha captcha = save.GetCaptcha(id);
             if (captcha == null)
                 throw new FileNotFoundException("id nicht Gefunden");
-            return captcha.CaptchaByteData;
+            return captcha.CaptchaByteData();
         }
 
         public bool VerifyAndDelete(string id, string secret)
         {
-            Cleanup();
+            save.CleanupCaptcha();
             if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(secret))
                 return false;
-            lock (Save)
+            Captcha captcha = save.GetCaptcha(id);
+            if (captcha != null)
             {
-                if(Save.TryGetValue(id, out Captcha captcha))
+                if (secret.ToUpper().Equals(captcha.Secret))
                 {
-                    if (secret.Equals(captcha.Secret)){
-                        Cleanup(captcha);
-                        return true;
-                    }
+                    Cleanup(captcha);
+                    return true;
                 }
             }
             return false;
@@ -67,25 +56,15 @@ namespace Callcenter.Models
 
         private void Cleanup(Captcha captcha)
         {
-            Save.Remove(captcha.id);
+            save.RemoveCaptcha(captcha);
         }
 
-        private void Cleanup()
-        {
-            lock (Save)
-            {
-                IEnumerable<Captcha> toDelete = Save.Values.Where(c => c.Timestamp < DateTime.Now.Subtract(GÜLTIGKEIT));
-                foreach(Captcha captcha in toDelete)
-                {
-                    Cleanup(captcha);
-                }
-            }
-        }
 
-        private string RandomString(int length)
+        private string GenSecret()
         {
+            Random random = new Random();
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            return new string(Enumerable.Repeat(chars, length)
+            return new string(Enumerable.Repeat(chars, SECRETLENTH)
               .Select(s => s[random.Next(s.Length)]).ToArray());
         }
     }

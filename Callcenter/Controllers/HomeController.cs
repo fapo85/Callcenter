@@ -16,8 +16,8 @@ namespace Callcenter.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly EntrySave _save;
-        public HomeController(ILogger<HomeController> logger, EntrySave save)
+        private readonly DBConnection _save;
+        public HomeController(ILogger<HomeController> logger, DBConnection save)
         {
             _logger = logger;
             _save = save;

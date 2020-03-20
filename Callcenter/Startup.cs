@@ -28,7 +28,7 @@ namespace Callcenter
         {
             services.AddControllersWithViews();
             services.AddSignalR();
-            services.AddSingleton<EntrySave>();
+            services.AddSingleton<DBConnection>();
 
             services.AddOptions();
             services.Configure<MongoDbConf>(Configuration.GetSection(nameof(MongoDbConf)));

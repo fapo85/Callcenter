@@ -13,20 +13,24 @@ namespace Callcenter.Controllers
 {
     public class SignalRHub : Hub
     {
-        private readonly EntrySave _save;
-        public SignalRHub(EntrySave save)
+        private readonly DBConnection _save;
+        public SignalRHub(DBConnection save)
         {
             _save = save;
         }
         public Task FreeEntry(string id)
         {
-            Entry entry = _save.Find(new ObjectId(id));
-            if (entry != null)
+            Task t = new Task(() =>
             {
-                entry.marked = false;
-                _save.Replace(entry);
-            }
-            return Clients.All.SendAsync("free", id);
+                Entry entry = _save.Find(new ObjectId(id));
+                if (entry != null)
+                {
+                    entry.marked = false;
+                    _save.Replace(entry);
+                }
+            });
+            t.Start();
+            return t;
         }
         public Task MarkEntry(string id)
         {
@@ -36,14 +40,7 @@ namespace Callcenter.Controllers
                 entry.marked = true;
                 _save.Replace(entry);
             }
-            Clients.All.SendAsync("marked", id);
-            return Clients.Caller.SendAsync("filldata", new EntryFill()
-            {
-                id = entry.id.ToString(),
-                phone = entry.phone,
-                zip = entry.zip,
-                request = (int)entry.request
-            });
+            return Clients.Caller.SendAsync("filldata", entry.TrasportModel);
         }
 
         public Task AddOrModifyEntry(string id, string phone, string zip, string request)
@@ -72,13 +69,7 @@ namespace Callcenter.Controllers
                 entry.request = ParseRequest(request);
                 entry.Validate();
                 _save.Add(entry);
-                return Clients.Caller.SendAsync("SaveOK", new EntryFill()
-                {
-                    id = entry.id.ToString(),
-                    phone = entry.phone,
-                    zip = entry.zip,
-                    request = (int)entry.request
-                });
+                return Clients.Caller.SendAsync("SaveOK", entry.TrasportModel);
             }catch(Exception e)
             {
                 StringBuilder sb = new StringBuilder();
@@ -97,13 +88,17 @@ namespace Callcenter.Controllers
 
         public Task DeleteEntry(string id)
         {
-            Entry entry = _save.Find(new ObjectId(id));
-            if (entry == null)
+            Task t = new Task(() =>
             {
-                throw new KeyNotFoundException("Id ist ungültig");
-            }
-            _save.Remove(new ObjectId(id));
-            return Clients.All.SendAsync("delete", id);
+                Entry entry = _save.Find(new ObjectId(id));
+                if (entry == null)
+                {
+                    throw new KeyNotFoundException("Id ist ungültig");
+                }
+                _save.Remove(new ObjectId(id));
+            });
+            t.Start();
+            return t;
         }
 
         private EntryRequest ParseRequest(string request)

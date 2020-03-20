@@ -16,8 +16,8 @@ namespace Callcenter.Controllers
     {
         private readonly ILogger<EntryController> _logger;
         private readonly IHubContext<SignalRHub> _hubContext;
-        private readonly EntrySave _save;
-        public EntryController(ILogger<EntryController> logger, IHubContext<SignalRHub> hubContext, EntrySave save)
+        private readonly DBConnection _save;
+        public EntryController(ILogger<EntryController> logger, IHubContext<SignalRHub> hubContext, DBConnection save)
         {
             _logger = logger;
             _hubContext = hubContext;
