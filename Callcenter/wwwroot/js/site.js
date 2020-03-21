@@ -45,7 +45,7 @@ function startConnection() {
         }
     });
     connection.on("ItemChange", function (object) {
-        console.log(object);
+        //console.log(object);
         var bisherigesObject = document.getElementById(object.id);
         if (bisherigesObject !== null) {
             if (object.deleted) {
