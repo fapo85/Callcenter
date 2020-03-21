@@ -17,6 +17,8 @@ namespace Callcenter.Models
         public ObjectId id { get; set; }
         public DateTime timestamp { get; set; }
         public DateTime? modifyts { get; set; }
+        public DateTime? finishts { get; set; }
+        public bool IsDeleted => finishts.HasValue;
         public string phone { get; set; }
         public string zip { get; set; }
         public EntryRequest request { get; set; }
@@ -32,6 +34,7 @@ namespace Callcenter.Models
             zip = zip,
             request = request.ToString(),
             requestid = (int)request,
+            deleted = IsDeleted,
             marked = marked
         };
         internal static int Compare(Entry x, Entry y)

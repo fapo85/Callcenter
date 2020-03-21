@@ -6,13 +6,6 @@ function startConnection() {
     }).catch(function (err) {
         return console.error(err.toString());
     });
-
-    connection.on("delete", function (id) {
-        var element = document.getElementById(id);
-        if (element && element != undefined && element != null) {
-            element.parentElement.removeChild(element);
-        }
-    });
     connection.on("SaveOK", function (data) {
         const requestFinish = document.getElementById('requestFinish');
         const requestForm = document.getElementById('requestForm');
@@ -51,11 +44,13 @@ function startConnection() {
             }
         }
     });
-    connection.on("insert", function (object) {
+    connection.on("ItemChange", function (object) {
         console.log(object);
         var bisherigesObject = document.getElementById(object.id);
         if (bisherigesObject !== null) {
-            if (object.marked) {
+            if (object.deleted) {
+                bisherigesObject.parentElement.removeChild(bisherigesObject);
+            } else if (object.marked) {
                 if (!bisherigesObject.classList.contains("marked")) {
                     bisherigesObject.classList.add("other");
                 }

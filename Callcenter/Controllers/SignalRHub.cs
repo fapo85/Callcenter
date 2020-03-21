@@ -95,7 +95,7 @@ namespace Callcenter.Controllers
                 {
                     throw new KeyNotFoundException("Id ist ungültig");
                 }
-                _save.Remove(new ObjectId(id));
+                _save.Remove(entry);
             });
             t.Start();
             return t;

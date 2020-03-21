@@ -14,6 +14,7 @@ namespace Callcenter.Models
         public string zip { get; set; }
         public string request { get; set; }
         public int requestid { get; set; }
+        public bool deleted { get; set; }
         public bool marked { get; set; }
     }
 }

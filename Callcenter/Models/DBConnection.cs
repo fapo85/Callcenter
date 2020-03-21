@@ -35,7 +35,6 @@ namespace Callcenter.Models
             _hubContext = hubContext;
 
             Listen();
-            ListenDelete();
         }
 
         internal Captcha GetCaptcha(string id) => captchas.Find(e => e.id == new ObjectId(id)).SingleOrDefault();
@@ -47,7 +46,7 @@ namespace Callcenter.Models
         {
             var options = new ChangeStreamOptions { FullDocument = ChangeStreamFullDocumentOption.UpdateLookup };
             var pipeline = new EmptyPipelineDefinition<ChangeStreamDocument<Entry>>()
-                .Match("{ operationType: { $in: [ 'insert','replace', 'update', ] }}")
+                .Match("{ operationType: { $in: [ 'insert','replace', 'update' ] }}")
                 .Project("{ fullDocument: 1 }");
 
             using var cursor = requests.Watch(pipeline, options);
@@ -56,31 +55,16 @@ namespace Callcenter.Models
                 Entry entry = BsonSerializer.Deserialize<Entry>((BsonDocument)change.Elements.ToList()[1].Value);
                 if (entry.zip.Equals("00000"))
                 {
-                    _hubContext.Clients.All.SendAsync("insert", entry.TrasportModel);
+                    var send = entry.TrasportModel;
+                    _hubContext.Clients.All.SendAsync("ItemChange", send);
                 }
-            });
-        }
-
-
-        private async void ListenDelete()
-        {
-            var options = new ChangeStreamOptions { FullDocument = ChangeStreamFullDocumentOption.Default };
-            var pipeline = new EmptyPipelineDefinition<ChangeStreamDocument<Entry>>()
-                .Match("{ operationType: { $in: [ 'delete' ] }}")
-                .Project("{ fullDocument: 0 }");
-
-            using var cursor = requests.Watch(pipeline, options);
-            await cursor.ForEachAsync(change =>
-            {
-                var deletedid = change.GetElement("documentKey").Value["_id"].ToString();
-                _hubContext.Clients.All.SendAsync("delete", deletedid);
             });
         }
 
         //public List<Entry> GetAll() => collection.Find(e => true).SortBy(e => e.timestamp).ToList();
         public List<Entry> GetAll(int skip, int limit)
         {
-            var list = requests.Find(e => true).Skip(skip).Limit(limit).ToList();
+            var list = requests.Find(e => !e.finishts.HasValue).Skip(skip).Limit(limit).ToList();
             list.Sort(Entry.Compare);
             return list;
         }
@@ -92,7 +76,7 @@ namespace Callcenter.Models
 
         public List<Entry> GetNoZip()
         {
-            var list = requests.Find(e => e.zip == "00000").ToList();
+            var list = requests.Find(e => !e.finishts.HasValue && e.zip == "00000").ToList();
             list.Sort(Entry.Compare);
             return list;
         }
@@ -104,7 +88,13 @@ namespace Callcenter.Models
         internal long CountCallDay() => requests.Find(e => e.timestamp > DateTime.Now.Subtract(TimeSpan.FromMinutes(1440))).CountDocuments();
         internal long CountEditDay() => requests.Find(e => e.modifyts.HasValue && e.modifyts > DateTime.Now.Subtract(TimeSpan.FromMinutes(1440))).CountDocuments();
 
-        internal void Remove(ObjectId id) => requests.DeleteOne(e => e.id == id);
+        //internal void Remove(ObjectId id) => requests.DeleteOne(e => e.id == id);
+        internal void Remove(ObjectId id) => Remove(Find(id));
+        internal void Remove(Entry entry)
+        {
+            entry.finishts = DateTime.Now;
+            Replace(entry);
+        }
 
         internal void Add(Entry entry)
         {
