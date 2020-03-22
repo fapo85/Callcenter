@@ -90,3 +90,15 @@ body {
 .invalid {
     border-color: red;
 }
+.popup {
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.newEntry {
+    border-radius: 5px;
+}
+
+.non-visible {
+    display: none !important;
+}

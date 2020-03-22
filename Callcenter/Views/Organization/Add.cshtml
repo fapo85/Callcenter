@@ -1,0 +1,148 @@
+﻿@model Callcenter.Models.Organization
+@{
+    ViewData["Title"] = "Neuer Eintrag";
+    //Layout = "~/Views/Shared/_BlankLayout.cshtml";
+    string id = Model.id.ToString();
+}
+<script type="text/javascript">
+    function ShowErrorMsgFrame(msg) {
+        console.error("Fehler: " + msg);
+        const ErrorWindow = document.getElementById('ErrorWindow');
+        if (ErrorWindow && ErrorWindow != undefined && ErrorWindow != null) {
+            document.getElementById('ErrorText').innerHTML = msg;
+            ErrorWindow.classList.remove("invisible");
+            setTimeout(function () {
+                ErrorWindow.classList.add("invisible");
+            }, 2000);
+        }
+    }
+    function validateCaptcha() {
+        const captchasecret = document.getElementById("captchasecret");
+        if (captchasecret && captchasecret != undefined && captchasecret != null) {
+            //var rgx = new RegExp("^\\d{5}$");
+            //if (captchasecret.value.match(rgx)) {
+            if (captchasecret.value.length == 5) {
+                captchasecret.classList.remove("invalid");
+                return true;
+            } else {
+                captchasecret.classList.add("invalid");
+            }
+        }
+        return false;
+    }
+    function validateFrame() {
+        //if (!validatePhone()) {
+        //    ShowErrorMsgFrame("Telefonnummer ist nicht korrekt");
+        //    return false;
+        //}
+        //if (!validateZip()) {
+        //    ShowErrorMsgFrame("Postleitzahl ist nicht korrekt");
+        //    return false;
+        //}
+        //if (!validateAuswahl()) {
+        //    ShowErrorMsgFrame("Auswahl ist nicht korrekt");
+        //    return false;
+        //}
+        //if (!validateCaptcha()) {
+        //    ShowErrorMsgFrame("Captcha ist nicht korrekt");
+        //    return false;
+        //}
+        return true;
+    }
+    function valiName() {
+        //if (validatePhone()) {
+        //    ErrorWindow.classList.add("invisible");
+        //}
+    }
+    function valiAnsprechpartner() {
+        //if (validateZip()) {
+        //    ErrorWindow.classList.add("invisible");
+        //}
+    }
+    function valiEmail() {
+        //if (validateCaptcha()) {
+        //    ErrorWindow.classList.add("invisible");
+        //}
+    }
+    function valiZip() {
+        //if (validateCaptcha()) {
+        //    ErrorWindow.classList.add("invisible");
+        //}
+    }
+    function AskDeleteOrganization(id) {
+
+    }
+</script>
+<div class="text-center">
+    <h1 class="display-4">@ViewData["Title"]</h1>
+</div>
+<div id="addspace">
+    <form method="post" action="/Organization/send" onsubmit="return validateFrame();">
+        @*<input id="captchaid" name="captchaid" type="hidden" value="@ViewData["captchaid"]">*@
+        <input id="id" name="id" type="hidden" value="@id">
+        <div class="form-group">
+            <label for="name">Name der Organisation:</label><br>
+            <input class="form-control input-lg" type="text" id="name" name="name" onchange="valiName();" value="@Model.name" required><br>
+        </div>
+        <div class="form-group">
+            <label for="ansprechpartner">Ansprechpartner:</label><br>
+            <input class="form-control input-lg test" type="text" id="ansprechpartner" name="ansprechpartner" onchange="valiAnsprechpartner();" value="@Model.ansprechpartner" required><br>
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label><br>
+            <input class="form-control input-lg test" type="text" id="email" name="email" onchange="valiEmail();" value="@Model.email" required><br>
+        </div>
+        <div class="form-group">
+            <label for="zip">Postleitzahlen:</label><br>
+            <textarea class="form-control input-lg test" id="zip" name="zip" onchange="valiZip();" value="" required>@Model.GetZipString(true)</textarea><br>
+        </div>
+        <div class="form-group">
+            @foreach (EntryRequest er in (EntryRequest[])Enum.GetValues(typeof(EntryRequest)))
+            {
+                @if ((int)er >= 0)
+                {
+                    if (Model.notifyrequest.Contains(er))
+                    {
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="notifyrequest@((int)er)" name="notifyrequest@((int)er)" value="@((int)er)" checked>
+                            <label class="form-check-label" for="notifyrequest@((int)er)">@er.ToString()</label>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="notifyrequest@((int)er)" name="notifyrequest@((int)er)" value="@((int)er)">
+                            <label class="form-check-label" for="notifyrequest@((int)er)">@er.ToString()</label>
+                        </div>
+                    }
+                }
+            }
+            <br>
+        </div>
+        @*<div class="form-group">
+                <label for="zip">Captcha:</label><img src="/Frame/Captcha/@ViewData["captchaid"]" alt="Captcha Picture" /><span class="alert-light">Bitte tippen Sie die Zeichen in dem farbigen Kästchen ab, bevor Sie auf Senden klicken.</span><br>
+                <input class="form-control input-lg test" type="text" id="captchasecret" name="captchasecret" onchange="valiCaptcha();" value="" required><br>
+            </div>*@
+        <input type="submit" class="btn btn-primary btn-lg btn-block active" value="Submit">
+        @if (!(String.IsNullOrWhiteSpace(id) || id.Equals("000000000000000000000000")))
+        {
+            <button class="btn btn-danger btn-block btn-sm" onclick="AskDeleteOrganization('@id');">Eintrag Löschen</button>
+        }
+    </form>
+    <br />
+    <div id="ErrorWindow" class="popup invisible alert-danger" role="alert">
+        <p>
+            <b>Ein Fehler ist aufgetreten.</b>
+        </p>
+        <p id="ErrorText"></p>
+    </div>
+    @if (ViewData["msg"] != null)
+    {
+        <div id="ErrorWindow" class="popup alert-danger" role="alert">
+            <p>
+                <b>Ein Fehler ist aufgetreten.</b>
+            </p>
+            <p id="ErrorText">@ViewData["msg"]</p>
+        </div>
+    }
+</div>

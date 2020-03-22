@@ -1,0 +1,37 @@
+﻿@model Callcenter.Models.Organization
+@{
+    ViewData["Title"] = "Neuer Eintrag Erfolgreich";
+    //Layout = "~/Views/Shared/_BlankLayout.cshtml";
+}
+<div class="text-center">
+    <h1 class="display-4">@ViewData["Title"]</h1>
+    <h2>Neuer Eintrag Erfolgreich</h2>
+</div>
+<div id="addspace">
+    <form>
+        <input id="id" name="id" type="hidden" value="@Model.id">
+        <div class="form-group">
+            <label for="name">Name der Organisation:</label><br>
+            <input class="form-control input-lg" type="text" id="name" name="name" onchange="valiName();" value="@Model.name" disabled><br>
+        </div>
+        <div class="form-group">
+            <label for="ansprechpartner">Ansprechpartner:</label><br>
+            <input class="form-control input-lg test" type="text" id="ansprechpartner" name="ansprechpartner" onchange="valiAnsprechpartner();" value="@Model.ansprechpartner" disabled><br>
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label><br>
+            <input class="form-control input-lg test" type="text" id="email" name="email" onchange="valiEmail();" value="@Model.email" disabled><br>
+        </div>
+        <div class="form-group">
+            <label for="zip">Postleitzahlen:</label><br>
+            <textarea class="form-control input-lg test" id="zip" name="zip" onchange="valiZip();" value="@Model.GetZipString(true)" disabled></textarea><br>
+        </div>
+        <input type="submit" value="Submit" disabled>
+    </form>
+    <br />
+    <div id="requestFinish" class="popup alert-success" role="alert">
+        <p>
+            <b>Der Eintrag wurde erfolgreich gespeichert!</b>
+        </p>
+    </div>
+</div>

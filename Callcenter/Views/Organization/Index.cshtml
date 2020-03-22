@@ -1,0 +1,44 @@
+﻿@model System.Collections.Generic.List<Callcenter.Models.Entry>
+@{
+    ViewData["Title"] = "Organisationen";
+}
+
+<div class="text-center">
+    <h1 class="display-4">@ViewData["Title"]</h1>
+</div>
+<div class="form-check">
+    <input class="form-check-input" type="checkbox" id="zipreverse" name="zipreverse" onchange="FillOrganisationenTable();">
+    <label class="form-check-label" for="zipreverse">Postleitzahlen suche Umkehren:</label>
+</div>
+<div class="form-group">
+    <label for="OrganisationenSuchen">Suchen:</label><br>
+    <input class="form-control input-lg" type="text" id="OrganisationenSuchen" name="OrganisationenSuchen" onkeyup="FillOrganisationenTable();"><br>
+</div>
+<div id="tablespace">
+    <table style="width:100%">
+        <thead>
+            <tr>
+                <th>name</th>
+                <th>ansprechpartner</th>
+                <th>zips</th>
+                <th>Benachrichtigung</th>
+                <th>timestamp</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="OrganisationTable"></tbody>
+    </table>
+</div>
+<script type="text/javascript">
+    function FillOrganisationenTableIfReady(fn) {
+        if (document.readyState === "complete" || document.readyState === "interactive") {
+            setTimeout(fn, 1);
+        } else {
+            document.addEventListener("DOMContentLoaded", fn);
+        }
+    }
+    FillOrganisationenTableIfReady(function () {
+        FillOrganisationenTable();
+    });
+
+</script>

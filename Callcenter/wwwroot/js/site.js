@@ -101,7 +101,15 @@ function startConnection() {
                         .append('<i class="fas fa-thumbs-up" title="Fertigstellen">')
                     )
                 )
-            );
+        );
+        const footfield = document.getElementById("footfield");
+        const InfoWindow = document.getElementById("InfoWindow");
+        footfield.classList.add("non-visible");
+        InfoWindow.classList.remove("non-visible");
+        setTimeout(function () {
+            InfoWindow.classList.add("non-visible");
+            footfield.classList.remove("non-visible");
+        }, 1500);
     });
 }
 startConnection();
@@ -270,5 +278,63 @@ function ShowErrorMsg(msg, time) {
             ErrorWindow.classList.add("non-visible");
             requestForm.classList.remove("non-visible");
         }, time);
+    }
+}
+function FillOrganisationenTable() {
+    const suchfeld = document.getElementById("OrganisationenSuchen");
+    const tbody = document.getElementById("OrganisationTable");
+    const zipreverse = document.getElementById("zipreverse");
+    if (suchfeld && suchfeld != undefined && suchfeld != null && tbody && tbody != undefined && tbody != null && zipreverse && zipreverse != undefined && zipreverse != null) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("GET", "/Organization/SearchRev/" + zipreverse.checked + "/" + suchfeld.value, true);
+        xhttp.onload = function () {
+            if (xhttp.status >= 200 && xhttp.status < 400) {
+                var data = JSON.parse(xhttp.responseText);
+                //Delete Data
+                tbody.childNodes.forEach(itm => {
+                    var found = false;
+                    data.forEach(datitm => {
+                        if (itm.id == datitm.id) {
+                            found = true;
+                        }
+                    });
+                    if (!found) {
+                        console.log("delete element" + itm.id);
+                        itm.parentElement.removeChild(itm);
+                    }
+                });
+                //Add Date
+                data.forEach(itm => {
+                    if (!document.getElementById(itm.id)) {
+                        console.log("add element" + itm.id);
+                        var tableline = document.createElement('tr');
+                        var name = document.createElement('td');
+                        var ansprechpartner = document.createElement('td');
+                        var zips = document.createElement('td');
+                        var notifyrequest = document.createElement('td');
+                        var timestamp = document.createElement('td');
+                        var editbtn = document.createElement('span');
+                        tableline.id = itm.id;
+                        name.innerHTML = itm.name;
+                        ansprechpartner.innerHTML = itm.ansprechpartner;
+                        zips.innerHTML = itm.zips;
+                        notifyrequest.innerHTML = itm.notifyrequest;
+                        timestamp.innerHTML = itm.ansprechpartner;
+                        editbtn.innerHTML = '<a href="/Organization/Add/' + itm.id + '"><i class="fas fa-user-edit text-secondary" title="Bearbeitung"></i></a>';
+                        tableline.appendChild(name);
+                        tableline.appendChild(ansprechpartner);
+                        tableline.appendChild(zips);
+                        tableline.appendChild(notifyrequest);
+                        tableline.appendChild(timestamp);
+                        tableline.appendChild(editbtn);
+                        tbody.appendChild(tableline);
+                    }
+                });
+            } else {
+                console.log("Error Get");
+            }
+        };
+        xhttp.send();
+
     }
 }
