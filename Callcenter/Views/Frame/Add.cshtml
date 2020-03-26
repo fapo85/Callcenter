@@ -111,10 +111,10 @@
             }
         </div>
         <div class="form-group">
-            <label for="zip">Captcha:</label><img src="/Frame/Captcha/@ViewData["captchaid"]" alt="Captcha Picture" /><span class="alert-light">Bitte tippen Sie die Zeichen in dem farbigen Kästchen ab, bevor Sie auf Senden klicken.</span><br>
+            <img src="/Frame/Captcha/@ViewData["captchaid"]" alt="Captcha Picture" /><span class="alert-light">Bitte tippen Sie die Zeichen in dem farbigen Kästchen ab, bevor Sie auf Senden klicken.</span><br>
             <input class="form-control input-lg test" type="text" id="captchasecret" name="captchasecret" onchange="valiCaptcha();" value="" required><br>
         </div>
-        <input type="submit" value="Submit">
+        <input type="submit" value="Absenden">
     </form>
     <br />
     <div id="ErrorWindow" class="popup invisible alert-danger" role="alert">
