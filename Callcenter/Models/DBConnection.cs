@@ -88,6 +88,19 @@ namespace Callcenter.Models
                 {
                     var send = entry.TrasportModel;
                     _hubContext.Clients.All.SendAsync("ItemChange", send);
+                    foreach (Organization organisation in organisations.Find("{ \"zips\": {$in: [ '00000', ]}}").ToList<Organization>())
+                    {
+                        var notifikation = new Notifikation()
+                        {
+                            entry = entry.id.ToString(),
+                            organisation = organisation.id.ToString(),
+                            timestamp = DateTime.Now
+                        };
+                        if (TryAddNotifkation(notifikation))
+                        {
+                            notifikationFactory.Send(notifikation, organisation, entry);
+                        }
+                    }
                 }
                 else
                 {

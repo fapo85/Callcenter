@@ -102,3 +102,12 @@ body {
 .non-visible {
     display: none !important;
 }
+
+#logo {
+    max-width: 200px;
+}
+
+.right-side {
+    position: absolute;
+    right: 0px;
+}

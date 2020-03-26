@@ -16,19 +16,19 @@
         }
     }
     function validateCaptcha() {
-    const captchasecret = document.getElementById("captchasecret");
-    if (captchasecret && captchasecret != undefined && captchasecret != null) {
-        //var rgx = new RegExp("^\\d{5}$");
-        //if (captchasecret.value.match(rgx)) {
-        if (captchasecret.value.length == 5) {
-            captchasecret.classList.remove("invalid");
-            return true;
-        } else {
-            captchasecret.classList.add("invalid");
+        const captchasecret = document.getElementById("captchasecret");
+        if (captchasecret && captchasecret != undefined && captchasecret != null) {
+            //var rgx = new RegExp("^\\d{5}$");
+            //if (captchasecret.value.match(rgx)) {
+            if (captchasecret.value.length == 5) {
+                captchasecret.classList.remove("invalid");
+                return true;
+            } else {
+                captchasecret.classList.add("invalid");
+            }
         }
+        return false;
     }
-    return false;
-}
     function validateFrame() {
         if (!validatePhone()) {
             ShowErrorMsgFrame("Telefonnummer ist nicht korrekt");
@@ -64,8 +64,13 @@
         }
     }
 </script>
-<div class="text-center">
-    <h1 class="display-4">@ViewData["Title"]</h1>
+<div class="row">
+    <div class="text-right">
+        <h1 class="display-4">@ViewData["Title"]</h1>
+    </div>
+    <div class="right-side">
+        <a href="https://gemeinschaft.online/" target="_blank"><img class="right-side" src="~/images/logo.png" alt="Gemeinschaft.Online" id="logo" /></a>
+    </div>
 </div>
 <div id="addspace">
     <form method="post" action="/frame/send" onsubmit="return validateFrame();">
@@ -120,11 +125,11 @@
     </div>
     @if (ViewData["msg"] != null)
     {
-    <div id="ErrorWindow" class="popup alert-danger" role="alert">
-        <p>
-            <b>Ein Fehler ist aufgetreten.</b>
-        </p>
-        <p id="ErrorText">@ViewData["msg"]</p>
-    </div>
+        <div id="ErrorWindow" class="popup alert-danger" role="alert">
+            <p>
+                <b>Ein Fehler ist aufgetreten.</b>
+            </p>
+            <p id="ErrorText">@ViewData["msg"]</p>
+        </div>
     }
 </div>

@@ -1,11 +1,15 @@
 ﻿@model Callcenter.Models.Entry
 @{
-    ViewData["Title"] = "Neuer Eintrag Erfolgreich";
+    ViewData["Title"] = "Erfolgreich";
     Layout = "~/Views/Shared/_BlankLayout.cshtml";
 }
-<div class="text-center">
-    <h1 class="display-4">@ViewData["Title"]</h1>
-    <h2>Neuer Eintrag Erfolgreich</h2>
+<div class="row">
+    <div class="text-right">
+        <h1 class="display-4">@ViewData["Title"]</h1>
+    </div>
+    <div class="right-side">
+        <a href="https://gemeinschaft.online/" target="_blank"><img class="right-side" src="~/images/logo.png" alt="Gemeinschaft.Online" id="logo" /></a>
+    </div>
 </div>
 <div id="addspace">
     <form>
