@@ -1,4 +1,4 @@
-﻿"
+﻿
 function ValidateAll() {
     if (!validatePhone()) {
         ShowErrorMsg("Telefonnummer ist nicht korrekt", 2000);
