@@ -22,12 +22,18 @@ namespace Callcenter.Controllers
             _hubContext = hubContext;
             _save = save;
         }
-
+        /// <summary>
+        /// Gbit eine Suchmaske bzw. Alle Organisationen zurück
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Index()
         {
             return View();
         }
-
+        /// <summary>
+        /// Gbit die eingabemaske für eine neue ORganisation zurück
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("/Organization/Add")]
         public IActionResult AddOrganization()
         {
@@ -38,26 +44,49 @@ namespace Callcenter.Controllers
                 notifyrequest = new List<EntryRequest>()
             });
         }
+        /// <summary>
+        /// Gbit die eingabemaske für eine neue Organisation zurück
+        /// </summary>
+        /// <param name="id">id der ORganisation</param>
+        /// <returns></returns>
         [HttpGet("/Organization/Add/{id}")]
         public IActionResult AddOrganization(string id)
         {
             return AddOrganization(_save.FindOrganization(id));
         }
+        /// <summary>
+        /// Gibt Alle Organisationen, in der Datenbank zurück
+        /// </summary>
+        /// <returns>json</returns>
         [HttpGet("/Organization/Search/")]
         public IEnumerable<OrganizationTrasport> SearchOrganisation()
         {
             return SearchOrganisation(null);
         }
+        /// <summary>
+        /// Gibt alle ORganisationen für einen anfang einer bestimmten PLZ Zurück
+        /// </summary>
+        /// <param name="search"></param>
+        /// <returns></returns>
         [HttpGet("/Organization/Search/{search}")]
         public IEnumerable<OrganizationTrasport> SearchOrganisation(string search)
         {
             return SearchRevOrganisation(false, search);
         }
+        /// <summary>
+        /// Dreht die suche um, Fallback Leere Suche
+        /// </summary>
+        /// <param name="zipreserve"></param>
+        /// <returns></returns>
         [HttpGet("/Organization/SearchRev/{zipreserve}")]
         public IEnumerable<OrganizationTrasport> SearchOrganisation(bool zipreserve)
         {
             return SearchRevOrganisation(zipreserve, null);
         }
+        /// Sucht nach einer Organisation mit einem bestimmten plz
+        /// <param name="zipreserve">Bestimmt ob nach match oder anfang gesucht werden soll</param>
+        /// <param name="search">Anfang oder Match der PLZ</param>
+        /// <returns></returns>
         [HttpGet("/Organization/SearchRev/{zipreserve}/{search}/")]
         public IEnumerable<OrganizationTrasport> SearchRevOrganisation(bool zipreserve, string search)
         {
@@ -76,11 +105,20 @@ namespace Callcenter.Controllers
             }
         }
 
-
+        /// <summary>
+        /// Eine neue bzw. zu bearbeitende Organisation mit der Möglichkeit einen Fehler zurück zu geben
+        /// </summary>
+        /// <param name="entry"></param>
+        /// <param name="msg"></param>
+        /// <returns></returns>
         public IActionResult AddOrganization(Organization entry, string msg = null)
         {
             return View("Add", entry);
         }
+        /// <summary>
+        /// Speichert eine neue oder Bearbeitete Organisation
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult Send(string id, string name, string ansprechpartner, string email, string zip, int NotifyRequest1, int NotifyRequest2, int NotifyRequest3, int NotifyRequest4)
         {

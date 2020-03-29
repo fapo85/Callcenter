@@ -14,7 +14,7 @@ namespace Callcenter.Controllers
         private readonly ILogger<AlleController> _logger;
         private readonly DBConnection _save;
         private const int DEFAULTLIMIT  = 30;
-        private const int MAXLIMITLIMIT = 100000;
+        private const int MAXLIMIT = 100000;
         public AlleController(ILogger<AlleController> logger, DBConnection save)
         {
             _logger = logger;
@@ -22,21 +22,32 @@ namespace Callcenter.Controllers
         }
 
 
-
+        /// <summary>
+        /// Alle Anrufe, in der Datenbank zurückgeben. Max: DefaultLimit
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("/Alle/")]
         public IActionResult GetAllDefault()
         {
             return GetAll(0, DEFAULTLIMIT);
         }
+        /// <summary>
+        /// Alle Anrufe, in der Datenbank zurückgeben. beginnent bei Eintrag: Skip Max: DefaultLimit
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("/Alle/{skip}")]
         public IActionResult GetAllDefLimit(int skip)
         {
             return GetAll(skip, DEFAULTLIMIT);
         }
+        /// <summary>
+        /// Alle Anrufe, in der Datenbank zurückgeben. beginnent bei Eintrag: Skip Max: limit, limit ist Limitiert auf MaxLimit
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("/Alle/{skip}/{limit}")]
         public IActionResult GetAll(int skip, int limit)
         {
-            limit = Math.Min(limit, MAXLIMITLIMIT);
+            limit = Math.Min(limit, MAXLIMIT);
             long countall =_save.CountAll();
             long nextskip = Math.Min(countall, skip + DEFAULTLIMIT);
             long NaechstenAnz = Math.Min(countall - nextskip, DEFAULTLIMIT);

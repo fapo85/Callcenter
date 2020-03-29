@@ -23,7 +23,10 @@ namespace Callcenter.Controllers
             _hubContext = hubContext;
             _save = save;
         }
-
+        /// <summary>
+        /// Erzeugt einen Neuen Eintrag ohne Captcha Abfrage
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Index()
         {
             return View(new Entry());

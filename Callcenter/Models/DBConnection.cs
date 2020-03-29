@@ -52,27 +52,57 @@ namespace Callcenter.Models
             Listen();
 
         }
-
+        /// <summary>
+        /// Eine Bearbeitete Organisation Finden und Ersetzen
+        /// </summary>
+        /// <param name="entry"></param>
         internal void UpdateOrganization(Organization entry)
         {
             entry.Verify();
             organisations.ReplaceOne(o => o.id == entry.id, entry);
         }
-
+        /// <summary>
+        /// Findet eine Orgnisation über die id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         internal Organization FindOrganization(string id) => FindOrganization(new ObjectId(id));
         internal Organization FindOrganization(ObjectId id) => organisations.Find(i => i.id == id).SingleOrDefault();
 
+        /// <summary>
+        /// Findet ein Captcha Element in der Datenbank
+        /// </summary>
+        /// <returns></returns>
         internal Captcha GetCaptcha(string id) => captchas.Find(e => e.id == new ObjectId(id)).SingleOrDefault();
+        /// <summary>
+        /// Fügt ein Captcha Element in die Datenbank hinzu
+        /// </summary>
         internal void AddCaptcha(Captcha captcha)=> captchas.InsertOne(captcha);
-
+        /// <summary>
+        /// Löscht einen einzelnen eintrag in der Datenbank
+        /// Dies passiert wenn das captcha erfolgreich "verwendet" wurde
+        /// </summary>
+        /// <param name="captcha"></param>
+        internal void RemoveCaptcha(Captcha captcha) => captchas.DeleteOne(c => c.id == captcha.id);
+        /// <summary>
+        /// Löscht Alle Captchas aus der Datenbank, deren Laufzeit abgelaufen ist.
+        /// </summary>
+        internal void CleanupCaptcha() => captchas.DeleteMany(e => e.Timestamp < DateTime.Now.Subtract(CaptchaFactory.GÜLTIGKEIT));
+        /// <summary>
+        /// Fügt eine Organisation in die Datenbank hinzu
+        /// </summary>
+        /// <param name="entry"></param>
         internal void AddOrganization(Organization entry)
         {
             entry.Verify();
             organisations.InsertOne(entry);
         }
-
-        internal void RemoveCaptcha(Captcha captcha) => captchas.DeleteOne(c => c.id == captcha.id);
-        internal void CleanupCaptcha() => captchas.DeleteMany(e => e.Timestamp < DateTime.Now.Subtract(CaptchaFactory.GÜLTIGKEIT));
+        /// <summary>
+        /// Listener Für Änderungen in der Entry Datenbank
+        /// Sorgt mit hilfe von SignalR dafür, das die Frontends aktualsiert werden.
+        /// Prüft ob es eine Organisation gibt, welche eine benachrichtigung z.b. über email aboniert hat und versendert die.
+        /// Es ist auch möglich sich auf die PLZ 00000 zu Registrieren.
+        /// </summary>
         private async void Listen()
         {
             var options = new ChangeStreamOptions { FullDocument = ChangeStreamFullDocumentOption.UpdateLookup };
@@ -129,40 +159,74 @@ namespace Callcenter.Models
         }
 
         //public List<Entry> GetAll() => collection.Find(e => true).SortBy(e => e.timestamp).ToList();
+        /// <summary>
+        /// Gibt alle Einträge Sortiert zurück
+        /// </summary>
+        /// <param name="skip">Erstes Element</param>
+        /// <param name="limit">Anzahl der Elemente</param>
+        /// <returns></returns>
         public List<Entry> GetAll(int skip, int limit)
         {
             var list = requests.Find(e => !e.finishts.HasValue).Skip(skip).Limit(limit).ToList();
             list.Sort(Entry.Compare);
             return list;
         }
-
+        /// <summary>
+        /// Anzahl aller einträge in der datenkbank
+        /// </summary>
+        /// <returns></returns>
         public long CountAll() => requests.Find(e => true).CountDocuments();
 
 
         //public List<Entry> GetNoZip() => collection.Find(e => e.zip == "00000").SortBy(e => e.timestamp).ToList();
-
+        /// <summary>
+        /// Gibt alle einträge zurück, welche keine PLZ Besitzen
+        /// </summary>
+        /// <returns></returns>
         public List<Entry> GetNoZip()
         {
             var list = requests.Find(e => !e.finishts.HasValue && e.zip == "00000").ToList();
             list.Sort(Entry.Compare);
             return list;
         }
-
+        /// Anzahl aller Einträge welche keine plz besitzen
         public long CountNoZip() => requests.Find(e => e.zip == "00000").CountDocuments();
-
+        /// <summary>
+        /// Anzahl aller Anrufe in den letzten 60 Minuten
+        /// </summary>
+        /// <returns></returns>
         internal long CountCallHour() => requests.Find(e => e.timestamp > DateTime.Now.Subtract(TimeSpan.FromMinutes(60))).CountDocuments();
+        /// <summary>
+        /// Anzahl im Frontend Bearbeiteten Einträge in der Letzten Stunde
+        /// </summary>
+        /// <returns></returns>
         internal long CountEditHour() => requests.Find(e => e.modifyts.HasValue && e.modifyts > DateTime.Now.Subtract(TimeSpan.FromMinutes(60))).CountDocuments();
+        /// <summary>
+        /// Anzahl aller Anrufe in den letzten 24 Stunden
+        /// </summary>
+        /// <returns></returns>
         internal long CountCallDay() => requests.Find(e => e.timestamp > DateTime.Now.Subtract(TimeSpan.FromMinutes(1440))).CountDocuments();
+        /// <summary>
+        /// Anzahl im Frontend Bearbeiteten Einträge in der Letzten 24 Stunden
+        /// </summary>
+        /// <returns></returns>
         internal long CountEditDay() => requests.Find(e => e.modifyts.HasValue && e.modifyts > DateTime.Now.Subtract(TimeSpan.FromMinutes(1440))).CountDocuments();
 
         //internal void Remove(ObjectId id) => requests.DeleteOne(e => e.id == id);
+        /// <summary>
+        /// Löscht einen Telefon Anruf
+        /// </summary>
+        /// <param name="id"></param>
         internal void Remove(ObjectId id) => Remove(Find(id));
         internal void Remove(Entry entry)
         {
             entry.finishts = DateTime.Now;
             Replace(entry);
         }
-
+        /// <summary>
+        /// SPeichert einen Neuene Anruf in der Datenbank
+        /// </summary>
+        /// <param name="entry"></param>
         internal void Add(Entry entry)
         {
             if (entry.id == null)
@@ -171,7 +235,14 @@ namespace Callcenter.Models
             }
             requests.InsertOne(entry);
         }
-
+        /// <summary>
+        /// Versucht einen Neuen Eintrag in die Datenbank zu Speichern.
+        /// Die Software ist darauf ausgelegt auf mehreren Servern gleichzeitig zu laufen
+        /// in der Methode Listen werden Alle instanzen dieser Software auf einmal informiert.
+        /// die Datenbank hat einen Unique Index auf die relevanten Felder (siehe Konstruktor)
+        /// Die Schnellste Instanz wird den Eintrag einfügen können die restlichen bekommen eine Exeption
+        /// Bei Exception wird false zurück gegeben und bei erfolg true. So wird die Benachrichtigung nur vom Schnellsten Server versendet.
+        /// </summary>
         public bool TryAddNotifkation(Notifikation notifikation)
         {
             try
@@ -189,7 +260,16 @@ namespace Callcenter.Models
                 return false;
             }
         }
+        /// <summary>
+        /// Findet einen Telefonanruf
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         internal Entry Find(ObjectId id) => requests.Find(e => e.id == id).SingleOrDefault();
+        /// <summary>
+        /// Gibt alle Organisationen Zurück
+        /// </summary>
+        /// <returns></returns>
         internal IEnumerable<Organization> GetOrganisations() => organisations.Find(o => true).ToEnumerable<Organization>();
         internal IEnumerable<Organization> FindOrganisations(string suche, bool zipreverse)
         {
@@ -228,6 +308,10 @@ namespace Callcenter.Models
             sb.Append("]}");
             return sb.ToString();
         }
+        /// <summary>
+        /// Ersetzt Einen Telefonanruf in der datenbank
+        /// </summary>
+        /// <param name="entry"></param>
         internal void Replace(Entry entry) => requests.ReplaceOne(e => e.id == entry.id, entry);
 
 

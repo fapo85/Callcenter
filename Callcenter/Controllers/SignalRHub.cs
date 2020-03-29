@@ -18,6 +18,9 @@ namespace Callcenter.Controllers
         {
             _save = save;
         }
+        /// <summary>
+        /// Markiert einen Eintrag als nicht mehr bearbeitet.
+        /// </summary>
         public Task FreeEntry(string id)
         {
             Task t = new Task(() =>
@@ -32,6 +35,11 @@ namespace Callcenter.Controllers
             t.Start();
             return t;
         }
+        /// <summary>
+        /// Markiert einen Eintrag als bearbeitet.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public Task MarkEntry(string id)
         {
             Entry entry = _save.Find(new ObjectId(id));
@@ -42,7 +50,10 @@ namespace Callcenter.Controllers
             }
             return Clients.Caller.SendAsync("filldata", entry.TrasportModel);
         }
-
+        /// <summary>
+        /// Speichert, eine neuen eintrag, wird ein verwendeter eintrag gespiechert, wird ein neuer mit altem timestamp erzeugt.
+        /// </summary>
+        /// <returns></returns>
         public Task AddOrModifyEntry(string id, string phone, string zip, string request)
         {
             Entry entry = entry = new Entry()
@@ -85,7 +96,10 @@ namespace Callcenter.Controllers
             }
         }
 
-
+        /// <summary>
+        /// Löscht einen Enitrag aus der Datenbank
+        /// </summary>
+        /// <returns></returns>
         public Task DeleteEntry(string id)
         {
             Task t = new Task(() =>

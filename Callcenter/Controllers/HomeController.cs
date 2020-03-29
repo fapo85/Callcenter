@@ -22,11 +22,24 @@ namespace Callcenter.Controllers
             _logger = logger;
             _save = save;
         }
+        /// <summary>
+        /// Gibt eine ÜBersichtsseite Zurück, welche alle einträge ohne Zip Nummer enthält
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult Index()
         {
             return View(_save.GetNoZip());
         }
+        /// <summary>
+        /// Speichert einen Bearbeiteten Eintrag
+        /// Es kann sich um einen existierenden sowie einen neuen Eintrag handeln
+        /// </summary>
+        /// <param name="id">id des eintrages, welcher gesucht werden soll</param>
+        /// <param name="phone">telefonnummer</param>
+        /// <param name="request">siehe enum EntryRequest</param>
+        /// <param name="zip">Postleitzahl</param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult Index(string id, string phone, EntryRequest request, string zip)
         {

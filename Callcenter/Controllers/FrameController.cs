@@ -23,21 +23,40 @@ namespace Callcenter.Controllers
             _save = save;
             capatchaFactory = new CaptchaFactory(save);
         }
-
+        /// <summary>
+        /// Kein Öffentlicher Endpunkt, Weiterleitung zu krisenkultur
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Index()
         {
             return Redirect("https://www.krisenkultur.de");
         }
-
+        /// <summary>
+        /// Seite um einen Neuen Eintrag in die Datenbank zu bringen.
+        /// Designt zur einbindung als iFrame.
+        /// Geschützt durch captcha
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("/Frame/Add")]
         public IActionResult AddFrame()
         {
-
             return AddFrame(new Entry());
         }
+        /// <summary>
+        /// Gibt die Grafik des Captcha zurück.
+        /// einbindung über img src
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("/Frame/Captcha/{id}")]
         public IActionResult GetCaptcha(string id) => new FileStreamResult(new MemoryStream(capatchaFactory.GetImgBytes(id)), "image/png");
-
+        /// <summary>
+        /// Erzeugt oder Bearbeitet einen Eintrag im iFrame. Gbit zusätzlich eine Fehlermeldung Zurück.
+        /// Wird Verwendet um bei einem Captcha Fehler, den Fehler zurück zu geben
+        /// </summary>
+        /// <param name="entry">zu bearbeitender eintrag</param>
+        /// <param name="msg">Fehlermeldung, muss nicht übergeben werden.</param>
+        /// <returns></returns>
         public IActionResult AddFrame(Entry entry, string msg = null)
         {
             Captcha captcha = capatchaFactory.Generate();
@@ -45,6 +64,16 @@ namespace Callcenter.Controllers
             ViewData["msg"] = msg;
             return View("Add", entry);
         }
+        /// <summary>
+        /// Speichert einen Einen Neuen Eintrag
+        /// </summary>
+        /// <param name="id">Muss eine leere id sein, Bearbieten noch nicht Möglich</param>
+        /// <param name="phone">Telefennummer</param>
+        /// <param name="request">siehe enum EntryRequest</param>
+        /// <param name="zip">Postleitzahl</param>
+        /// <param name="captchasecret">Hoffentlich gelöste Captcha</param>
+        /// <param name="captchaid">die id unter wlecher des Captcha in der Datenbank geführt wird</param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult Send(string id, string phone, EntryRequest request, string zip, string captchasecret, string captchaid)
         {
@@ -94,6 +123,12 @@ namespace Callcenter.Controllers
                 return BadRequest(e.Message);
             }
         }
+        /// <summary>
+        /// Status des Enpunktes abrufen gibt einfach einen nicht cachebares 200 Zurück.
+        /// Wird verwendet, damit der Load Balancer die Anwendung als online erkennt.
+        /// ist im Frame Controller, da es hier keine httpauth gibt
+        /// </summary>
+        /// <returns></returns>
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         [HttpGet("/Frame/CheckStatus")]
         public IActionResult CheckStatus()
