@@ -21,9 +21,9 @@ namespace Callcenter.Models
     {
         private readonly IMongoCollection<Entry> requests;
         private readonly IMongoCollection<Captcha> captchas;
-        private readonly IMongoCollection<Notifikation> notifications;
-        private readonly IMongoCollection<Organization> organisations;
-        private readonly NotifikationFactory notifikationFactory;
+        //private readonly IMongoCollection<Notifikation> notifications;
+        //private readonly IMongoCollection<Organization> organisations;
+        //private readonly NotifikationFactory notifikationFactory;
 
         public DBConnection(IOptions<MongoDbConf> options, IHubContext<SignalRHub> hubContext)
         {
@@ -37,8 +37,8 @@ namespace Callcenter.Models
 
             requests = database.GetCollection<Entry>("requests");
             captchas = database.GetCollection<Captcha>("captcha");
-            organisations = database.GetCollection<Organization>("organisations");
-            notifications = database.GetCollection<Notifikation>("notifications");
+            //organisations = database.GetCollection<Organization>("organisations");
+            //notifications = database.GetCollection<Notifikation>("notifications");
             CreateIndexOptions<Notifikation> notificationIndexoptions = new CreateIndexOptions<Notifikation>();
             notificationIndexoptions.Unique = true;
             var notificationIndex = new CreateIndexModel<Notifikation>(Builders<Notifikation>.IndexKeys.Combine(
@@ -46,9 +46,9 @@ namespace Callcenter.Models
                 Builders<Notifikation>.IndexKeys.Ascending(n => n.organisation)                
                 ), notificationIndexoptions);
             notificationIndex.Options.Unique = true;
-            notifications.Indexes.CreateOne(notificationIndex);
+            //notifications.Indexes.CreateOne(notificationIndex);
             _hubContext = hubContext;
-            notifikationFactory = new NotifikationFactory(this);
+            //notifikationFactory = new NotifikationFactory(this);
             Listen();
 
         }
@@ -56,18 +56,18 @@ namespace Callcenter.Models
         /// Eine Bearbeitete Organisation Finden und Ersetzen
         /// </summary>
         /// <param name="entry"></param>
-        internal void UpdateOrganization(Organization entry)
-        {
-            entry.Verify();
-            organisations.ReplaceOne(o => o.id == entry.id, entry);
-        }
+        //internal void UpdateOrganization(Organization entry)
+        //{
+        //    entry.Verify();
+        //    organisations.ReplaceOne(o => o.id == entry.id, entry);
+        //}
         /// <summary>
         /// Findet eine Orgnisation über die id
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        internal Organization FindOrganization(string id) => FindOrganization(new ObjectId(id));
-        internal Organization FindOrganization(ObjectId id) => organisations.Find(i => i.id == id).SingleOrDefault();
+        //internal Organization FindOrganization(string id) => FindOrganization(new ObjectId(id));
+        //internal Organization FindOrganization(ObjectId id) => organisations.Find(i => i.id == id).SingleOrDefault();
 
         /// <summary>
         /// Findet ein Captcha Element in der Datenbank
@@ -92,11 +92,11 @@ namespace Callcenter.Models
         /// Fügt eine Organisation in die Datenbank hinzu
         /// </summary>
         /// <param name="entry"></param>
-        internal void AddOrganization(Organization entry)
-        {
-            entry.Verify();
-            organisations.InsertOne(entry);
-        }
+        //internal void AddOrganization(Organization entry)
+        //{
+        //    entry.Verify();
+        //    organisations.InsertOne(entry);
+        //}
         /// <summary>
         /// Listener Für Änderungen in der Entry Datenbank
         /// Sorgt mit hilfe von SignalR dafür, das die Frontends aktualsiert werden.
@@ -118,43 +118,43 @@ namespace Callcenter.Models
                 {
                     var send = entry.TrasportModel;
                     _hubContext.Clients.All.SendAsync("ItemChange", send);
-                    foreach (Organization organisation in organisations.Find("{ \"zips\": {$in: [ '00000', ]}}").ToList<Organization>())
-                    {
-                        var notifikation = new Notifikation()
-                        {
-                            entry = entry.id.ToString(),
-                            organisation = organisation.id.ToString(),
-                            timestamp = DateTime.Now
-                        };
-                        if (TryAddNotifkation(notifikation))
-                        {
-                            notifikationFactory.Send(notifikation, organisation, entry);
-                        }
-                    }
+                    //foreach (Organization organisation in organisations.Find("{ \"zips\": {$in: [ '00000', ]}}").ToList<Organization>())
+                    //{
+                    //    var notifikation = new Notifikation()
+                    //    {
+                    //        entry = entry.id.ToString(),
+                    //        organisation = organisation.id.ToString(),
+                    //        timestamp = DateTime.Now
+                    //    };
+                    //    if (TryAddNotifkation(notifikation))
+                    //    {
+                    //        notifikationFactory.Send(notifikation, organisation, entry);
+                    //    }
+                    //}
                 }
-                else
-                {
-                    StringBuilder sb = new StringBuilder();
-                    for (int i = 0; i < entry.zip.Length; i++)
-                    {
-                        sb.Append('\'');
-                        sb.Append(entry.zip.Substring(0, entry.zip.Length - i));
-                        sb.Append("', ");
-                    }
-                    foreach (Organization organisation in organisations.Find($"{{ \"zips\": {{$in: [ {sb.ToString()} ]}}}}").ToList<Organization>())
-                    {
-                        var notifikation = new Notifikation()
-                        {
-                            entry = entry.id.ToString(),
-                            organisation = organisation.id.ToString(),
-                            timestamp = DateTime.Now
-                        };
-                        if (TryAddNotifkation(notifikation))
-                        {
-                            notifikationFactory.Send(notifikation, organisation, entry);
-                        }
-                    }
-                }
+                //else
+                //{
+                //    StringBuilder sb = new StringBuilder();
+                //    for (int i = 0; i < entry.zip.Length; i++)
+                //    {
+                //        sb.Append('\'');
+                //        sb.Append(entry.zip.Substring(0, entry.zip.Length - i));
+                //        sb.Append("', ");
+                //    }
+                //    foreach (Organization organisation in organisations.Find($"{{ \"zips\": {{$in: [ {sb.ToString()} ]}}}}").ToList<Organization>())
+                //    {
+                //        var notifikation = new Notifikation()
+                //        {
+                //            entry = entry.id.ToString(),
+                //            organisation = organisation.id.ToString(),
+                //            timestamp = DateTime.Now
+                //        };
+                //        if (TryAddNotifkation(notifikation))
+                //        {
+                //            notifikationFactory.Send(notifikation, organisation, entry);
+                //        }
+                //    }
+                //}
             });
         }
 
@@ -243,23 +243,23 @@ namespace Callcenter.Models
         /// Die Schnellste Instanz wird den Eintrag einfügen können die restlichen bekommen eine Exeption
         /// Bei Exception wird false zurück gegeben und bei erfolg true. So wird die Benachrichtigung nur vom Schnellsten Server versendet.
         /// </summary>
-        public bool TryAddNotifkation(Notifikation notifikation)
-        {
-            try
-            {
-                if(notifikation.id == null)
-                {
-                    notifikation.id = new ObjectId();
-                }
-                notifikation.timestamp = DateTime.Now;
-                notifications.InsertOne(notifikation);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
+        //public bool TryAddNotifkation(Notifikation notifikation)
+        //{
+        //    try
+        //    {
+        //        if(notifikation.id == null)
+        //        {
+        //            notifikation.id = new ObjectId();
+        //        }
+        //        notifikation.timestamp = DateTime.Now;
+        //        notifications.InsertOne(notifikation);
+        //        return true;
+        //    }
+        //    catch
+        //    {
+        //        return false;
+        //    }
+        //}
         /// <summary>
         /// Findet einen Telefonanruf
         /// </summary>
@@ -270,31 +270,31 @@ namespace Callcenter.Models
         /// Gibt alle Organisationen Zurück
         /// </summary>
         /// <returns></returns>
-        internal IEnumerable<Organization> GetOrganisations() => organisations.Find(o => true).ToEnumerable<Organization>();
-        internal IEnumerable<Organization> FindOrganisations(string suche, bool zipreverse)
-        {
-            string filter;
-            if (zipreverse)
-            {
-                filter = $"{{$or: [ {{ \"zips\": {{'$regex': '{suche}'}}}},{{ \"name\": {{'$regex': '{suche}'}}}},{{ \"ansprechpartner\": {{'$regex': '{suche}'}}}},{{ \"email\": {{'$regex': '{suche}'}}}}  ]}}";
-            }
-            else
-            {
-                filter = $"{{$or: [ {{ \"zips\": {inreg(suche)}}},{{ \"name\": {{'$regex': '{suche}'}}}},{{ \"ansprechpartner\": {{'$regex': '{suche}'}}}},{{ \"email\": {{'$regex': '{suche}'}}}}  ]}}";
-            }
-            return organisations.Find(filter).ToEnumerable<Organization>();
-            //StringBuilder sb = new StringBuilder();
-            //for (int i = 0; i < suche.Length; i++)
-            //{ 
-            //    sb.Append('\'');
-            //    sb.Append(suche.Substring(0, suche.Length - i));
-            //    sb.Append("', ");
-            //}
-            //return organisations.Find($"{{$in: [ {{ \"zips\": {{$in: [ {sb.ToString()} ]}}]}}}}").ToEnumerable<Organization>();
-            //organisations.Find($"{{ \"zips\": {{$in: [ {sb.ToString()} ]}}}}").ToList<Organization>()
-            //return organisations.Find($"{{ \"zips\": {{'$regex': '{suche}'}}}}").ToEnumerable<Organization>();
-            //return organisations.Find(o => o.name.ToLower().StartsWith(suche.ToLower()) || o.ansprechpartner.ToLower().StartsWith(suche.ToLower()) || o.zips.OneStartWith()).ToEnumerable<Organization>();
-        }
+        //internal IEnumerable<Organization> GetOrganisations() => organisations.Find(o => true).ToEnumerable<Organization>();
+        //internal IEnumerable<Organization> FindOrganisations(string suche, bool zipreverse)
+        //{
+        //    string filter;
+        //    if (zipreverse)
+        //    {
+        //        filter = $"{{$or: [ {{ \"zips\": {{'$regex': '{suche}'}}}},{{ \"name\": {{'$regex': '{suche}'}}}},{{ \"ansprechpartner\": {{'$regex': '{suche}'}}}},{{ \"email\": {{'$regex': '{suche}'}}}}  ]}}";
+        //    }
+        //    else
+        //    {
+        //        filter = $"{{$or: [ {{ \"zips\": {inreg(suche)}}},{{ \"name\": {{'$regex': '{suche}'}}}},{{ \"ansprechpartner\": {{'$regex': '{suche}'}}}},{{ \"email\": {{'$regex': '{suche}'}}}}  ]}}";
+        //    }
+        //    return organisations.Find(filter).ToEnumerable<Organization>();
+        //    //StringBuilder sb = new StringBuilder();
+        //    //for (int i = 0; i < suche.Length; i++)
+        //    //{ 
+        //    //    sb.Append('\'');
+        //    //    sb.Append(suche.Substring(0, suche.Length - i));
+        //    //    sb.Append("', ");
+        //    //}
+        //    //return organisations.Find($"{{$in: [ {{ \"zips\": {{$in: [ {sb.ToString()} ]}}]}}}}").ToEnumerable<Organization>();
+        //    //organisations.Find($"{{ \"zips\": {{$in: [ {sb.ToString()} ]}}}}").ToList<Organization>()
+        //    //return organisations.Find($"{{ \"zips\": {{'$regex': '{suche}'}}}}").ToEnumerable<Organization>();
+        //    //return organisations.Find(o => o.name.ToLower().StartsWith(suche.ToLower()) || o.ansprechpartner.ToLower().StartsWith(suche.ToLower()) || o.zips.OneStartWith()).ToEnumerable<Organization>();
+        //}
         private static string inreg(string inpt)
         {
             StringBuilder sb = new StringBuilder();
