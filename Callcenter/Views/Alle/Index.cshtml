@@ -18,7 +18,7 @@
             @foreach(var item in Model)
             {
         <tr>
-            <td>@item.timestamp.ToLocalTime()</td>
+            <td>@item.timestamp.ToLocalTime().ToString("d.M.yyyy HH:mm:ss")</td>
             <td>@item.modifyts?.ToLocalTime()</td>
             <td>@item.phone</td>
             <td>@item.zip</td>
