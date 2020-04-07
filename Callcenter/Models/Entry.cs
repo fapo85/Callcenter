@@ -15,7 +15,7 @@ namespace Callcenter.Models
 
         [BsonId]
         public ObjectId id { get; set; }
-        public DateTime timestamp { get; set; }
+        public BsonDateTime timestamp { get; set; }
         public DateTime? modifyts { get; set; }
         public DateTime? finishts { get; set; }
         public bool IsDeleted => finishts.HasValue;
@@ -28,7 +28,7 @@ namespace Callcenter.Models
         public EntryFill TrasportModel => new EntryFill()
         {
             id = id.ToString(),
-            timestamp = timestamp,
+            timestamp = timestamp.ToUniversalTime(),
             modifyts = modifyts,
             phone = phone,
             zip = zip,
@@ -39,7 +39,7 @@ namespace Callcenter.Models
         };
         internal static int Compare(Entry x, Entry y)
         {
-            return DateTime.Compare(x.timestamp, y.timestamp);
+            return DateTime.Compare(x.timestamp.ToUniversalTime(), y.timestamp.ToUniversalTime());
         }
         public void Validate()
         {
