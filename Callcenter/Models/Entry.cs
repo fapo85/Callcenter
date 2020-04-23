@@ -17,9 +17,11 @@ namespace Callcenter.Models
         public ObjectId id { get; set; }
         [BsonSerializer(typeof(TimeKapselConverter))]
         public TimeKapsel timestamp { get; set; }
-        public DateTime? modifyts { get; set; }
-        public DateTime? finishts { get; set; }
-        public bool IsDeleted => finishts.HasValue;
+        [BsonSerializer(typeof(TimeKapselConverter))]
+        public TimeKapsel modifyts { get; set; }
+        [BsonSerializer(typeof(TimeKapselConverter))]
+        public TimeKapsel finishts { get; set; }
+        public bool IsDeleted => finishts!=null;
         public string phone { get; set; }
         public string zip { get; set; }
         public EntryRequest request { get; set; }

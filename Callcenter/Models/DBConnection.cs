@@ -167,7 +167,7 @@ namespace Callcenter.Models
         /// <returns></returns>
         public List<Entry> GetAll(int skip, int limit)
         {
-            var list = requests.Find(e => !e.finishts.HasValue).Skip(skip).Limit(limit).ToList();
+            var list = requests.Find(e => e.finishts==null).Skip(skip).Limit(limit).ToList();
             list.Sort(Entry.Compare);
             return list;
         }
@@ -185,7 +185,7 @@ namespace Callcenter.Models
         /// <returns></returns>
         public List<Entry> GetNoZip()
         {
-            var list = requests.Find(e => !e.finishts.HasValue && e.zip == "00000").ToList();
+            var list = requests.Find(e => e.finishts == null && e.zip == "00000").ToList();
             list.Sort(Entry.Compare);
             return list;
         }
@@ -200,7 +200,7 @@ namespace Callcenter.Models
         /// Anzahl im Frontend Bearbeiteten Einträge in der Letzten Stunde
         /// </summary>
         /// <returns></returns>
-        internal long CountEditHour() => requests.Find(e => e.modifyts.HasValue && e.modifyts > DateTime.Now.Subtract(TimeSpan.FromMinutes(60))).CountDocuments();
+        internal long CountEditHour() => requests.Find(e => e.modifyts != null && e.modifyts > DateTime.Now.Subtract(TimeSpan.FromMinutes(60))).CountDocuments();
         /// <summary>
         /// Anzahl aller Anrufe in den letzten 24 Stunden
         /// </summary>
@@ -210,7 +210,7 @@ namespace Callcenter.Models
         /// Anzahl im Frontend Bearbeiteten Einträge in der Letzten 24 Stunden
         /// </summary>
         /// <returns></returns>
-        internal long CountEditDay() => requests.Find(e => e.modifyts.HasValue && e.modifyts > DateTime.Now.Subtract(TimeSpan.FromMinutes(1440))).CountDocuments();
+        internal long CountEditDay() => requests.Find(e => e.modifyts != null && e.modifyts > DateTime.Now.Subtract(TimeSpan.FromMinutes(1440))).CountDocuments();
 
         //internal void Remove(ObjectId id) => requests.DeleteOne(e => e.id == id);
         /// <summary>

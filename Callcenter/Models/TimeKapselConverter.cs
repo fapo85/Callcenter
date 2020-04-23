@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using System;
+using System.Text.Json;
 
 namespace Callcenter.Models
 {
@@ -21,8 +22,10 @@ namespace Callcenter.Models
                     return new TimeKapsel(BsonSerializer.Deserialize<double>(context.Reader));
                 case MongoDB.Bson.BsonType.DateTime:
                     return new TimeKapsel(BsonSerializer.Deserialize<DateTime>(context.Reader));
+                case MongoDB.Bson.BsonType.String:
+                    return new TimeKapsel(BsonSerializer.Deserialize<String>(context.Reader));
                 default:
-                    var message = string.Format("Cannot deserialize BsonString or BsonInt32 from BsonType {0}.", type);
+                    var message = string.Format("Cannot deserialize from BsonType {0}.", type);
                     throw new BsonSerializationException(message);
             }
         }
@@ -43,7 +46,7 @@ namespace Callcenter.Models
                 case MongoDB.Bson.BsonType.DateTime:
                     return new TimeKapsel(BsonSerializer.Deserialize<DateTime>(context.Reader));
                 default:
-                    var message = string.Format("Cannot deserialize BsonString or BsonInt32 from BsonType {0}.", type);
+                    var message = string.Format("Cannot deserialize from BsonType {0}.", type);
                     throw new BsonSerializationException(message);
             }
         }
@@ -51,7 +54,19 @@ namespace Callcenter.Models
         {
             if (value != null)
             {
-                context.Writer.WriteString(((DateTime)value).ToString());
+                switch (value)
+                {
+                    case DateTime obj:
+                        context.Writer.WriteString(obj.ToString());
+                        break;
+                    case TimeKapsel obj:
+                        string json = JsonSerializer.Serialize<TimeKapsel>(obj);
+                        context.Writer.WriteString(JsonSerializer.Serialize<TimeKapsel>(obj));
+                        break;
+                    default:
+                        var message = string.Format("Cannot serilize from BsonType {0}.", value.GetType());
+                        throw new BsonSerializationException(message);
+                }
             }
             else
             {
